@@ -45,7 +45,7 @@ while ( is_resource( $socket ) ) {
     // SEPARAÇÃO DE NICK - IDENT - HOSTNAME [CheckNet~!CheckNet@CardingBotNetwork]
  if($d[1] == "PRIVMSG" && $d[2] == $nickname){
 			$comando = str_replace(":!", "", preg_replace('/\s+/', '', $d[3]));
-			$nicktmp = explode('!', $d[0]);
+			$nicktmp = explode('~', $d[0]);
 			$nickCMD = str_replace(":", "", $nicktmp[0]);
 			$hosttmp = explode('@', $nicktmp[1]);
 			$identdtmp = $hosttmp[0];
@@ -104,7 +104,7 @@ while ( is_resource( $socket ) ) {
     $bancoPHONE = $jsonOUTPUT['bank']['phone'];
 
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "06[_$nickCMD_] →  02BIN: 05$checkBIN 02BANDEIRA: 05$bandeira 02TIPO: 05$tipo 02NIVEL: 05$nivel 02MOEDA: 05$moeda 02PAÍS: 05$pais 02BANCO: 05$bancoNOME - $bancoURL 02TELEFONE: 05$bancoPHONE";
+    $resposta = "06[_$nickCMD_] →  02BIN: 07$checkBIN 02BANDEIRA: 7$bandeira 02TIPO: 07$tipo 02NIVEL: 07$nivel 02MOEDA: 07$moeda 02PAÍS: 07$pais 02BANCO: 07$bancoNOME - $bancoURL 02TELEFONE: 07$bancoPHONE";
 
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
