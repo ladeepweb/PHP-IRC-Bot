@@ -67,7 +67,7 @@ while ( is_resource( $socket ) ) {
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
-      if ( $d[3] === ':!bin' ) {
+      if ( $d[3] === ':!bin' or ':!bank' ) {
     // SEPARA SOMENTE OS 6 PRIMEIROS DIGITOS
     $checkBIN = substr($d[4], 0, 6);
     // CURL
@@ -112,7 +112,7 @@ while ( is_resource( $socket ) ) {
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
      
-     if ( $d[3] === ':!ip' ) {
+     if ( $d[3] === ':!ip' or ':!lookup' ) {
          // SEPARA SOMENTE OS 11 DIGITOS
     $iplist = $d[4];
     $IPKEY = '7b6fab341bd4c7cd10c7e116c177c8c8fb246f77033f020b37d6b88467f14de1';
@@ -169,7 +169,7 @@ while ( is_resource( $socket ) ) {
     
       }
 
-    if ( $d[3] === ':!proxy' ) {
+    if ( $d[3] === ':!proxy' or ':!socks5' ) {
     // link de api
     $linkapi = 'https://gimmeproxy.com/api/getProxy?coutry=BR&api_key=5a1a1257-cf8a-4975-b2fb-f01f13a3d023&protocol=SOCKS5';
     // CURL
@@ -192,7 +192,7 @@ while ( is_resource( $socket ) ) {
     $PaisProxy = $jsonOUTPUT['country'];
 
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkPROXY] → 02[DIRECCION] $proxy 04| [PUERTA] $PortaProxy04| [TIPO] $TipoProxy04| [UBICACIÓN] $PaisProxy04|07 #HISPANO ";
+    $resposta = "07[ChkPROXY] → 02[DIRECCION] $proxy 04| [PUERTA] $PortaProxy 04| [TIPO] $TipoProxy 04| [UBICACIÓN] $PaisProxy 04|07 #HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
