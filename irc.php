@@ -103,8 +103,23 @@ while ( is_resource( $socket ) ) {
       }
 
      if ( $d[3] === ':!chk' ) {
-        $resposta = "07[ChkFULL]  →02 [ESTE MANDO ESTÁ DESACTIVADO] 04| 07#HISPANO ";
-        socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
+         // SEPARA SOMENTE OS 11 DIGITOS
+    $infocc = $d[4];
+    // CURL
+    $ch = curl_init();
+   curl_setopt($ch, CURLOPT_URL, "http://bronxservices.net/loja/pag.php?lista=$infocc");
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    $output = curl_exec($ch);
+    curl_close($ch);
+    //SEPARANDO DADOS
+    $ex = explode(' ',$output);
+    
+    // DEFININDO MENSAGEM DE RESPOSTA AO IRC
+    $resposta = "07[ChkFULL] → $ex[1] ";
+     socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
 
@@ -224,7 +239,7 @@ while ( is_resource( $socket ) ) {
     $output = curl_exec($ch);
     curl_close($ch);
     //SEPARANDO DADOS
-    $ex = explode('💸','</spam>' $output);
+    $ex = explode('💸',$output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
     $resposta = "07[ChkGGBB] → $ex[1] ";
@@ -232,5 +247,7 @@ while ( is_resource( $socket ) ) {
     // ENVIANDO RESPOSTA AO IRC
     print_r('PRIVMSG ');
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
+
+   }
 }
 ?>
