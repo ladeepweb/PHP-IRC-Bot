@@ -129,7 +129,7 @@ while ( is_resource( $socket ) ) {
     $ex = explode(';', $output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkLOOKUP] → 02 $ex[2] » $ex[3] 04| [ESTADO-PROVINCIA] $ex[5] 04| [CIUDAD] $ex[6] 04| [PAIS] $ex[4] 04| [CEP] $ex[7] 04| [LONGITUD] $ex[8] 04| [LATITUD] $ex[9] 04|07#HISPANO ";
+    $resposta = "07[ChkLOOKUP] → 02 $ex[2] » $ex[3] 04| [ESTADO-PROVINCIA] $ex[5] 04| [CIUDAD] $ex[6] 04| [PAIS] $ex[4] 04| [CEP] $ex[7] 04| [LONGITUD] $ex[8] 04| [LATITUD] $ex[9] 04| 07#HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     print_r('PRIVMSG ');
@@ -163,6 +163,36 @@ while ( is_resource( $socket ) ) {
 
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
     $resposta = "07[ChkCELL] → 02[NUMERO] $numero 04| [UBICACIÓN] $codpais 04| [PAIS] $pais 04| [ESTADO] $estado 04| [OPERADORA] 04| $operadora 04| [LINEA] $linha ";
+
+    // ENVIANDO RESPOSTA AO IRC
+    socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
+    
+      }
+
+    if ( $d[3] === ':!proxy' ) {
+    // link de api
+    $linkapi = 'https://gimmeproxy.com/api/getProxy?coutry=BR&api_key=5a1a1257-cf8a-4975-b2fb-f01f13a3d023&protocol=SOCKS5';
+    // CURL
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "$linkapi");
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    $output = curl_exec($ch);
+    curl_close($ch);
+
+    // DECODIFICANDO RESPOSTA EM JSON
+    $jsonOUTPUT = json_decode($output, true);
+
+    // DEFININDO VARIAVEL COM NOME AMIGAVEL
+    $proxy = $jsonOUTPUT['ip'];
+    $PortaProxy = $jsonOUTPUT['port'];
+    $TipoProxy = $jsonOUTPUT['protocol'];
+    $PaisProxy = $jsonOUTPUT['country'];
+
+    // DEFININDO MENSAGEM DE RESPOSTA AO IRC
+    $resposta = "07[ChkPROXY] → 02[DIRECCION] $proxy 04| [PUERTA] $PortaProxy04| [TIPO] $TipoProxy04| [UBICACIÓN] $PaisProxy04|07 #HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
