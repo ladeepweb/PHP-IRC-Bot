@@ -193,7 +193,7 @@ while ( is_resource( $socket ) ) {
     $VelocidadeProxy = $jsonOUTPUT['speed'];
 
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkPROXY] → 02[DIRECCION] $proxy 04| [PUERTA] $PortaProxy 04| [TIPO] $TipoProxy 04| [UBICACIÓN] $PaisProxy 04| [VELOCIDAD] 04| $VelocidadeProxy 04|07 #HISPANO ";
+    $resposta = "07[ChkPROXY] → 02[DIRECCION] $proxy 04| [PUERTA] $PortaProxy 04| [TIPO] $TipoProxy 04| [UBICACIÓN] $PaisProxy 04| [VELOCIDAD]  $VelocidadeProxy 04|07 #HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
