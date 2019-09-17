@@ -221,13 +221,13 @@ while ( is_resource( $socket ) ) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    print_r($output = curl_exec($ch));
+    $output = curl_exec($ch);
     curl_close($ch);
     //SEPARANDO DADOS
-    $ex = explode('💸', $output);
+    $ex = explode('💸','</spam>' $output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkGGBB] → $ex[1] ";
+    $resposta = "07[ChkGGBB] → $ex[1] ";
 
     // ENVIANDO RESPOSTA AO IRC
     print_r('PRIVMSG ');
