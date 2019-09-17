@@ -7,9 +7,9 @@ date_default_timezone_set('America/Santiago');
 $server = 'irc.chknet.cc'; // irc chknet server
 $port = 6667; // port irc.chknet.cc
 $nickname = 'CheckNet'; //nickname of bot viadex24
-$ident = 'CheckNet'; //indeitify bot 
-$realname = 'Created By Norah_C_IV'; //profile of BOT
-$channel = '#CARDER'; // channel of chknet made with norah
+$ident = 'HispBot'; //indeitify bot 
+$realname = '#HISPANO SERVICE SOP By Norah_C_IV'; //profile of BOT
+$channel = '#hispano'; // channel of chknet made with norah
 
 // conexão com a rede
 $socket = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
@@ -37,19 +37,9 @@ while ( is_resource( $socket ) ) {
 
     // Dividindo os dados em pedaços
     $d = explode(' ', $data);
-
     
     // Preenchendo o array evita feio indefinido
     $d = array_pad( $d, 10, '' );
-
- // SEPARAÇÃO DE NICK - IDENT - HOSTNAME [CheckNet~!CheckNet@CardingBotNetwork]
- if($d[1] == "PRIVMSG" && $d[0] == $nickname){
-			$comando = str_replace(":!", "", preg_replace('/\s+/', '', $d[3]));
-			$nicktmp = explode('!', $d[0]);
-			$nickCMD = str_replace(":", "", $nicktmp[0]);
-			$hosttmp = explode('@', $nicktmp[1]);
-			$identdtmp = $hosttmp[0];
- }
 
     // Manipulador de ping
     // PING : irc.chknet.cc
@@ -68,12 +58,12 @@ while ( is_resource( $socket ) ) {
      //   [0]                       [1]    [2]     [3]
      //  Nickname!ident@hostname PRIVMSG #USACC : !test
       if ( $d[3] === ':!help' ) {
-        $resposta = "06[_$nickCMD_] COMANDOS DISPONIVEIS → 07 [ !GGBB - !CHK - !CELL - !IP - !BIN - !TEMPMAIL - !RANDOMBR - !SRO - !CPF - !CNS - !NOME - !SSN ]03 EM BREVE TODOS EM FUNCIONAMENTO ! 13{BETA} ";
+        $resposta = "07[ChkAYUDA] → 02[LINK]04 | [https://paste24.com/ChkNet/ajuda] ";
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
      if ( $d[3] === ':!status' ) {
-        $resposta = "CHANNEL 07[#USACC] → 10CHK 04[OFF] 10BIN 03[ON] 10IP 03[ON] 10CELL 03[ON] 10GG 04[OFF] 05CANAL EM DESENVOLVIMENTO ! ";
+        $resposta = "07[ChkBOT] → 02[COMANDOS] [!GG] CHK GENERADO 04| [!CHK] CHK FULL 04| [!IP] IP LOCATOR 04| [!BIN] CHK BANCO DE INFORMACIÓN ";
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
@@ -104,7 +94,7 @@ while ( is_resource( $socket ) ) {
     $bancoPHONE = $jsonOUTPUT['bank']['phone'];
 
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "06[_$nickCMD_] →  02BIN: 05$checkBIN 02BANDEIRA: 05$bandeira 02TIPO: 05$tipo 02NIVEL: 05$nivel 02MOEDA: 05$moeda 02PAÍS: 05$pais 02BANCO: 05$bancoNOME - $bancoURL 02TELEFONE: 05$bancoPHONE";
+    $resposta = "07[ChkBIN] → 2 [BIN] $checkBIN 04| [BANDERA] $bandeira 04| [TIPO] $tipo 04| [NIVEL] $nivel 04| [MONEDA] $moeda 04| [PAÍS] $pais 04| [BANCO] $bancoNOME / $bancoURL 04| [TELÉFONO] $bancoPHONE 04| 07#HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
@@ -112,13 +102,13 @@ while ( is_resource( $socket ) ) {
       }
 
      if ( $d[3] === ':!chk' ) {
-        $resposta = " →06[_$nickCMD_] 0Este Comando Esta 07[ DESATIVADO ]02 TENTE NOVAMENTE MAIS TARDE ! ";
+        $resposta = "07[ChkFULL]  →02 [ESTE MANDO ESTÁ DESACTIVADO] 04| 07#HISPANO ";
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
 
      if ( $d[3] === ':!gg' ) {
-        $resposta = " → 06[_$nickCMD_] 0Este Comando Esta 07[ DESATIVADO ]02 TENTE NOVAMENTE MAIS TARDE ! ";
+        $resposta = "07[ChkGG]  →02 [ESTE MANDO ESTÁ DESACTIVADO] 04| 07#HISPANO ";
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
      
@@ -139,7 +129,7 @@ while ( is_resource( $socket ) ) {
     $ex = explode(';', $output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "10[_CHECK-BOT-IP_] → 06[_$nickCMD_] 05$ex[2] $ex[3] 02ESTADO-PROVINCIA: 05$ex[5] 02CIDADE: 05$ex[6] 02PAIS: 05$ex[4] 02CEP: 05$ex[7] 02LONGITUDE: 05$ex[8] 02LATITUDE: 05$ex[9] ";
+    $resposta = "07[ChkLOOKUP] → 02 $ex[2] » $ex[3] 04| [ESTADO-PROVINCIA] $ex[5] 04| [CIUDAD] $ex[6] 04| [PAIS] $ex[4] 04| [CEP] $ex[7] 04| [LONGITUD] $ex[8] 04| [LATITUD] $ex[9] 04|07#HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     print_r('PRIVMSG ');
@@ -172,7 +162,7 @@ while ( is_resource( $socket ) ) {
     $linha = $jsonOUTPUT['line_type'];
 
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "06[_$nickCMD_] → 02NUMERO: 01$numero 02LOCAL: 03$codpais 02PAIS: 03$pais 02ESTADO: 03$estado 02OPERADORA: 03$operadora 02LINHA: 03$linha";
+    $resposta = "07[ChkCELL] → 02[NUMERO] $numero 04| [UBICACIÓN] $codpais 04| [PAIS] $pais 04| [ESTADO] $estado 04| [OPERADORA] 04| $operadora 04| [LINEA] $linha ";
 
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
