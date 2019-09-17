@@ -100,7 +100,7 @@ while ( is_resource( $socket ) ) {
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
 
-      } elseif ( $d[3] === ':!bin' ) < 6) {
+      } elseif ( $d[3] === ':!bin' < 6 ) ) {
   $resposta = "07[ChkBIN] → 4 [ERROR]5 INSERTE UNA BIN VÁLIDA [!bin 666666]";
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
