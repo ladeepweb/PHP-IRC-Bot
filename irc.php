@@ -67,7 +67,7 @@ while ( is_resource( $socket ) ) {
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
-      if ( $d[3] === ':!bin' or ':!bank' ) {
+      if ( $d[3] === ':!bin' ) {
     // SEPARA SOMENTE OS 6 PRIMEIROS DIGITOS
     $checkBIN = substr($d[4], 0, 6);
     // CURL
@@ -112,7 +112,7 @@ while ( is_resource( $socket ) ) {
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
      
-     if ( $d[3] === ':!ip' or ':!lookup' ) {
+     if ( $d[3] === ':!ip' ) {
          // SEPARA SOMENTE OS 11 DIGITOS
     $iplist = $d[4];
     $IPKEY = '7b6fab341bd4c7cd10c7e116c177c8c8fb246f77033f020b37d6b88467f14de1';
@@ -169,7 +169,7 @@ while ( is_resource( $socket ) ) {
     
       }
 
-    if ( $d[3] === ':!proxy' or ':!socks5' ) {
+    if ( $d[3] === ':!proxy' ) {
     // link de api
     $linkapi = 'https://gimmeproxy.com/api/getProxy?coutry=BR&api_key=5a1a1257-cf8a-4975-b2fb-f01f13a3d023&protocol=SOCKS5';
     // CURL
