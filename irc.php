@@ -210,5 +210,27 @@ while ( is_resource( $socket ) ) {
    socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
 
       }
+
+    if ( $d[3] === ':!ggbb' ) {
+         // SEPARA SOMENTE OS 11 DIGITOS
+    $gerada = $d[4];
+    // CURL
+    $ch = curl_init();
+   curl_setopt($ch, CURLOPT_URL, "http://braske.ml/api.php?lista=$gerada");
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    print_r($output = curl_exec($ch));
+    curl_close($ch);
+    //SEPARANDO DADOS
+    $ex = explode('💸', $output);
+    
+    // DEFININDO MENSAGEM DE RESPOSTA AO IRC
+    $resposta = "07[ChkGGBB] → $ex[1] ";
+
+    // ENVIANDO RESPOSTA AO IRC
+    print_r('PRIVMSG ');
+    socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
 }
 ?>
