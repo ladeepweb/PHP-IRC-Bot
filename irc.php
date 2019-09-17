@@ -100,7 +100,11 @@ while ( is_resource( $socket ) ) {
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
 
-      }
+      } elseif ( $d[3] === ':!bin' ) < 6) {
+  $resposta = "07[ChkBIN] → 4 [ERROR]5 INSERTE UNA BIN VÁLIDA [!bin 666666]";
+    // ENVIANDO RESPOSTA AO IRC
+    socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
+  }
 
      if ( $d[3] === ':!chk' ) {
          // SEPARA SOMENTE OS 11 DIGITOS
@@ -120,8 +124,12 @@ while ( is_resource( $socket ) ) {
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
     $resposta = "07[ChkFULL] → $ex[1] ";
      socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
-     }
 
+     }
+     if ( $d[3] === ':!version' ) {
+        $resposta = "07[ChkBOT]  →02 [CheckNet BOT Version 4.0 [BETA] 17/09/2019] 04| 07#HISPANO ";
+        socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
+      }
 
      if ( $d[3] === ':!gg' ) {
         $resposta = "07[ChkGG]  →02 [ESTE MANDO ESTÁ DESACTIVADO] 04| 07#HISPANO ";
@@ -215,6 +223,7 @@ while ( is_resource( $socket ) ) {
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
     
       }
+
       if ( $d[3] === ':!random' ) {
 
      $dados = json_decode(GeraPessoa());
@@ -250,4 +259,5 @@ while ( is_resource( $socket ) ) {
 
    }
 }
+
 ?>
