@@ -101,6 +101,9 @@ while ( is_resource( $socket ) ) {
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
 
       } 
+
+  else if ( $d[3] === ':!bin' ) {
+  	$checkBIN = substr($d[4], 6, <);
   $resposta = "07[ChkBIN] → 4 [ERROR]5 INSERTE UNA BIN VÁLIDA [!bin 666666]";
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
@@ -248,9 +251,7 @@ while ( is_resource( $socket ) ) {
     $output = curl_exec($ch);
     curl_close($ch);
     //SEPARANDO DADOS
-    $ex = multiexplode(array("💸","<","/",">"), $output);
-    print_r($ex);
-   // $ex = explode('💸',$output);
+   $ex = explode('💸',$output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
     $resposta = "07[ChkGGBB] → $ex[1] ";
