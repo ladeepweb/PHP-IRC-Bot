@@ -1,6 +1,6 @@
 <?php
 // SCRIPTS
-require('scripts/4devs.php');
+require('4devs.php');
 // TIME ZONE
 date_default_timezone_set('America/Santiago');
 
@@ -100,7 +100,7 @@ while ( is_resource( $socket ) ) {
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
 
-      } elseif ( $d[3] === ':!bin' < 6 ) ) {
+      } 
   $resposta = "07[ChkBIN] → 4 [ERROR]5 INSERTE UNA BIN VÁLIDA [!bin 666666]";
     // ENVIANDO RESPOSTA AO IRC
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
@@ -248,7 +248,8 @@ while ( is_resource( $socket ) ) {
     $output = curl_exec($ch);
     curl_close($ch);
     //SEPARANDO DADOS
-    $ex = explode('💸',$output);
+    $ex = multiexplode(array("💸","<","/",">"), $output);
+   // $ex = explode('💸',$output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
     $resposta = "07[ChkGGBB] → $ex[1] ";
@@ -257,7 +258,5 @@ while ( is_resource( $socket ) ) {
     print_r('PRIVMSG ');
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
 
-   }
 }
-
 ?>
