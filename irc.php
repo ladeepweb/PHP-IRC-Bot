@@ -249,6 +249,7 @@ while ( is_resource( $socket ) ) {
     curl_close($ch);
     //SEPARANDO DADOS
     $ex = multiexplode(array("💸","<","/",">"), $output);
+    print_r($ex);
    // $ex = explode('💸',$output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
