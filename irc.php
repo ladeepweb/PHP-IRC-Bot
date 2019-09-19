@@ -63,8 +63,13 @@ while ( is_resource( $socket ) ) {
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
+     if ( $d[3] === ':!comandos' ) {
+        $resposta = "07[ChkBOT] → 02[COMANDOS] [!GGBB] CHK GENERADO 04| [!CHK] CHK FULL 04| [!IP] IP LOCATOR 04| [!BIN] CHK BANCO DE INFORMACIÓN 04| [!CELL] ANALIZAR TELEFONO NUMERO 04| [!PROXY] SERVICIO DE PROXI 04| [!STATUS] ESTADO DOS SERVICIOS 04| [!RANDOM] GENERADOR DE DATOS !07 [BETA]";
+        socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
+     }
+
      if ( $d[3] === ':!status' ) {
-        $resposta = "07[ChkBOT] → 02[COMANDOS] [!GG] CHK GENERADO 04| [!CHK] CHK FULL 04| [!IP] IP LOCATOR 04| [!BIN] CHK BANCO DE INFORMACIÓN ";
+        $resposta = "07[ChkBOT] → 02[SERVICIOS] ←→02 [!GGBB]03 ONLINE 04|02 [!CHK] 03ONLINE 04|02 [!IP]03 ONLINE 04|02 [!BIN]03 ONLINE 04|02 [!CELL] 03ONLINE 04|02 [!PROXY]03 ONLINE 04|02 [!STATUS]03 ONLINE ! 04|02 [!RANDOM]03 ONLINE !07 [BETA]";
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
@@ -252,6 +257,6 @@ while ( is_resource( $socket ) ) {
     // ENVIANDO RESPOSTA AO IRC
     print_r('PRIVMSG ');
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
-
+  }
 }
 ?>
