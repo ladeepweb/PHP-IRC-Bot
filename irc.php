@@ -49,6 +49,8 @@ while ( is_resource( $socket ) ) {
     }
      if ( $d[1] === '376' || $d[1] === '422' ) {
        socket_write( $socket, 'JOIN ' . $channel . "\r\n" );
+       socket_write( $socket, "JOIN #mexico \r\n" );
+       socket_write( $socket, "JOIN #gocheck \r\n" );
        socket_write( $socket, "PRIVMSG NickServ :identify norah235144\n" );
        socket_write( $socket, "PART #BRAZIL\n");
        socket_write( $socket, "PART #UNIX\n");
@@ -64,7 +66,7 @@ while ( is_resource( $socket ) ) {
      }
 
      if ( $d[3] === ':!comandos' ) {
-        $resposta = "07[ChkBOT] → 02[COMANDOS] [!GGBB] CHK GENERADO 04| [!CHK] CHK FULL 04| [!IP] IP LOCATOR 04| [!BIN] CHK BANCO DE INFORMACIÓN 04| [!CELL] ANALIZAR TELEFONO NUMERO 04| [!PROXY] SERVICIO DE PROXI 04| [!STATUS] ESTADO DOS SERVICIOS 04| [!RANDOM] GENERADOR DE DATOS !07 [BETA]";
+        $resposta = "07[ChkBOT] → 02[COMANDOS] [!GGBB] CHK GENERADO 04| [!CHK] CHK FULL 04| [!IP] IP LOCATOR 04| [!BIN] CHK BANCO DE INFORMACIÓN 04| [!CELL] ANALIZAR TELEFONO NUMERO 04| [!PROXY] SERVICIO DE PROXI 04| [!STATUS] ESTADO DOS SERVICIOS 04| [!RANDOM] GENERADOR DE DATOS  !07 [BETA]";
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
@@ -231,17 +233,15 @@ while ( is_resource( $socket ) ) {
 
      $resposta = "07[ChkRANDOM] →02 [NOMBRE] $dados->nome  04| [CPF] $dados->cpf  04| [RG] $dados->rg 04| [NACIMIENTO] $dados->data_nasc 04| [CEP] $dados->cep 04| [RUA] $dados->endereco, $dados->numero 04| [BAIRRO] $dados->bairro 04| [CIDAD] $dados->cidade 04| [ESTADO] $dados->estado 04| [TELÉFONO] $dados->celular\n";
 
- // ENVIANDO RESPOSTA AO IRC
-   socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
+    }
 
-      }
 
     if ( $d[3] === ':!ggbb' ) {
          // SEPARA SOMENTE OS 11 DIGITOS
     $gerada = $d[4];
     // CURL
     $ch = curl_init();
-   curl_setopt($ch, CURLOPT_URL, "http://braske.ml/api.php?lista=$gerada");
+   curl_setopt($ch, CURLOPT_URL, "http://central.bronxservices.net/api/cartao/gerada/api.php?lista=$gerada");
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -252,11 +252,11 @@ while ( is_resource( $socket ) ) {
    $ex = explode('💸',$output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkGGBB] → $ex[1] ";
+    $resposta = "07[ChkGGBB] → $output ";
 
     // ENVIANDO RESPOSTA AO IRC
     print_r('PRIVMSG ');
     socket_write($socket,'PRIVMSG '.$d[2]." :$resposta\r\n" );
   }
-}
+
 ?>
