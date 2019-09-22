@@ -30,7 +30,7 @@ $channel = '#hispano';
 $server = 'irc.chknet.cc';
 $port = 6667;
 $ident = 'ChkBOT';
-$realname = '[".$NAMESERVER."] NORAH_C_IV SERVICES';
+$realname = 'NORAH_C_IV SERVICES';
 
 // MASTER'S
 $master = 'NORAH_C_IV';
