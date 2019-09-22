@@ -290,5 +290,5 @@ while ( is_resource( $socket ) ) {
    // ENVIANDO RESPOSTA AO IRC
     socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
 }
-
+}
 ?>
