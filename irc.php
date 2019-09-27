@@ -32,7 +32,7 @@ $server = 'irc.chknet.cc'; // irc chknet server
 $port = 6667; // port irc.chknet.cc
 $nickname = 'CheckNet'; //nickname of bot viadex24
 $ident = 'HispBot'; //indeitify bot 
-$realname = 'SERVICE SOP By Norah_C_IV'; //profile of BOT
+$realname = '["$NAMESERVER"] SERVICE SOP By Norah_C_IV'; //profile of BOT
 $channel = '#hispano'; // channel of chknet made with norah
 
 // conexão com a rede
@@ -49,7 +49,7 @@ if ( $socket === false ) {
 
 // ENVIANDO INFO DO REGISTRO 
 socket_write( $socket, "NICK $nickname\r\n" );
-socket_write( $socket, "USER $ident * 8 ["$.NAMESERVER."] :$realname\r\n" );
+socket_write( $socket, "USER $ident * 8 :$realname\r\n" );
 
 // Finalmente, Loop Até o Soquete Fecha
 
@@ -71,21 +71,20 @@ while ( is_resource( $socket ) ) {
       socket_write( $socket, 'PONG ' . $d[1] . "\r\n" );
     }
      if ( $d[1] === '376' || $d[1] === '422' ) {
-       socket_write( $socket, "PRIVMSG NickServ :identify norah235144\n" );
        socket_write( $socket, "JOIN #HISPANO\r\n" );
        socket_write( $socket, "JOIN #mexico \r\n" );
        socket_write( $socket, "PART #gocheck \r\n" );
+       socket_write( $socket, "PRIVMSG NickServ :identify norah235144\n" );
        socket_write( $socket, "PART #BRAZIL\n");
        socket_write( $socket, "PART #UNIX\n");
        socket_write( $socket, "PART #CCPOWER\n");
 
      }
 
-
      //   [0]                       [1]    [2]     [3]
      //  Nickname!ident@hostname PRIVMSG #USACC : !test
       if ( $d[3] === ':!help' ) {
-        $resposta = "07[ChkAYUDA] → 02[LINK]04 | [https://carding.network/] ";
+        $resposta = "07[ChkAYUDA] → 02[LINK]04 | [https://paste24.com/ChkNet/ajuda] ";
         socket_write( $socket, 'PRIVMSG ' . $d[2] . " :$resposta\r\n" );
      }
 
@@ -126,7 +125,7 @@ while ( is_resource( $socket ) ) {
     $bancoPHONE = $jsonOUTPUT['bank']['phone'];
 
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkBIN] → 2 [BIN] $checkBIN 04| [BANDERA] $bandeira 04| [TIPO] $tipo 04| [NIVEL] $nivel 04| [MONEDA] $moeda 04| [PAÍS] $pais 04| [BANCO] $bancoNOME / $bancoURL 04| [TELÉFONO] $bancoPHONE 04| 07[$d[2]] ";
+    $resposta = "07[ChkBIN] → 2 [BIN] $checkBIN 04| [BANDERA] $bandeira 04| [TIPO] $tipo 04| [NIVEL] $nivel 04| [MONEDA] $moeda 04| [PAÍS] $pais 04| [BANCO] $bancoNOME / $bancoURL 04| [TELÉFONO] $bancoPHONE 04| 07#HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
@@ -152,19 +151,14 @@ while ( is_resource( $socket ) ) {
     $resposta = "07[ChkFULL] → $output ";
      socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
 
-     else if ( $d[3] === ':!chk') {
-      $resposta2 = "POR FAVOR - INSERTE UNA TARJETA VÁLIDA !05 MODELO => 02[0001112223334445|00|0000|000]"
-    socket_write( $socket,"PRIVMSG #HISPANO :$resposta2")
-     }
-
      }
      if ( $d[3] === ':!version' ) {
-        $resposta = "07[ChkBOT]  →02 [CheckNet BOT Version 4.0 [BETA] 27/09/2019] 04| 07#[$d[2]] ";
+        $resposta = "07[ChkBOT]  →02 [CheckNet BOT Version 4.0 [BETA] 17/09/2019] 04| 07#HISPANO ";
         socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
       }
 
      if ( $d[3] === ':!gg' ) {
-        $resposta = "07[ChkGG]  →02 [ESTE MANDO ESTÁ DESACTIVADO] 04| 07#[$d[2]] ";
+        $resposta = "07[ChkGG]  →02 [ESTE MANDO ESTÁ DESACTIVADO] 04| 07#HISPANO ";
         socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
      }
      
@@ -185,7 +179,7 @@ while ( is_resource( $socket ) ) {
     $ex = explode(';', $output);
     
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkLOOKUP] → 02 $ex[2] » $ex[3] 04| [ESTADO-PROVINCIA] $ex[5] 04| [CIUDAD] $ex[6] 04| [PAIS] $ex[4] 04| [CEP] $ex[7] 04| [LONGITUD] $ex[8] 04| [LATITUD] $ex[9] 04| 07[$d[2]] ";
+    $resposta = "07[ChkLOOKUP] → 02 $ex[2] » $ex[3] 04| [ESTADO-PROVINCIA] $ex[5] 04| [CIUDAD] $ex[6] 04| [PAIS] $ex[4] 04| [CEP] $ex[7] 04| [LONGITUD] $ex[8] 04| [LATITUD] $ex[9] 04| 07#HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     print_r('PRIVMSG ');
@@ -249,7 +243,7 @@ while ( is_resource( $socket ) ) {
     $VelocidadeProxy = $jsonOUTPUT['speed'];
 
     // DEFININDO MENSAGEM DE RESPOSTA AO IRC
-    $resposta = "07[ChkPROXY] → 02[DIRECCION] $proxy 04| [PUERTA] $PortaProxy 04| [TIPO] $TipoProxy 04| [UBICACIÓN] $PaisProxy 04| [VELOCIDAD]  $VelocidadeProxy 04|07 [$d[2]] ";
+    $resposta = "07[ChkPROXY] → 02[DIRECCION] $proxy 04| [PUERTA] $PortaProxy 04| [TIPO] $TipoProxy 04| [UBICACIÓN] $PaisProxy 04| [VELOCIDAD]  $VelocidadeProxy 04|07 #HISPANO ";
 
     // ENVIANDO RESPOSTA AO IRC
     socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
@@ -260,9 +254,7 @@ while ( is_resource( $socket ) ) {
 
      $dados = json_decode(GeraPessoa());
 
-     $resposta = "07[ChkRANDOM] →02 [NOMBRE] $dados->nome  04| [CPF] $dados->cpf  04| [RG] $dados->rg 04| [NACIMIENTO] $dados->data_nasc 04| [CEP] $dados->cep 04| [RUA] $dados->endereco, $dados->numero 04| [BAIRRO] $dados->bairro 04| [CIDAD] $dados->cidade 04| [ESTADO] $dados->estado 04| [TELÉFONO] $dados->celular";
-
-      // ENVIANDO RESPOSTA AO IRC
+     $resposta = "07[ChkRANDOM] →02 [NOMBRE] $dados->nome  04| [CPF] $dados->cpf  04| [RG] $dados->rg 04| [NACIMIENTO] $dados->data_nasc 04| [CEP] $dados->cep 04| [RUA] $dados->endereco, $dados->numero 04| [BAIRRO] $dados->bairro 04| [CIDAD] $dados->cidade 04| [ESTADO] $dados->estado 04| [TELÉFONO] $dados->celular\n";
 
       socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
     }
@@ -288,9 +280,15 @@ while ( is_resource( $socket ) ) {
 
     // ENVIANDO RESPOSTA AO IRC
     print_r('PRIVMSG ');
-    
     socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
   }
 
+  if ( $ex[3] === ':!test' ) {
 
+  $resposta = "[$d[0]] => isto é um teste !";
+
+   // ENVIANDO RESPOSTA AO IRC
+    socket_write( $socket,"PRIVMSG #HISPANO :$resposta\r\n" );
+}
+}
 ?>
