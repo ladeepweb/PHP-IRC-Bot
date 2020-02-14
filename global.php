@@ -349,11 +349,11 @@ function process_commands()
        
     
         /* BIN beta */
-       print_r (if(strtoupper(substr($con['buffer']['text'], 0, 6)) == '!BINLOOKUP')){
+       if(strtoupper(substr($con['buffer']['text'])) == '!betabin'){
            
-           $gatilho = explode(' ', $con['buffer']['text'], 0, 6);
-           $gatilho[0] = '!BINLOOKUP';
-           $gatilho[1] = $binTEMP();
+           $gatilho = explode(' ', $con['buffer']['text']);
+           $gatilho[0] = '!betabin';
+           $gatilho[1] = $binTEMP, 0, 6();
 
             // DECODIFICANDO RESPOSTA EM JSON
             $jsonOUTPUT = json_decode($outputbin, true);
