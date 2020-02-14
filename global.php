@@ -223,11 +223,11 @@ function process_commands()
         }
        
         /* NICK */
-        if (substr(strtoupper($con['buffer']['text']), 0, 5) == "./NICK"){
+        if (substr(strtoupper($con['buffer']['text']), 0, 5) == ".NICK"){
                 $args = explode(" ", $con['buffer']['text']);
                
                 if (count($args) < 3) {
-                        cmd_send(prep_text("07NICK", "02SYNTAX »06 ./NICK [07ADMIN] 10NEW_NICK"));
+                        cmd_send(prep_text("07NICK", "02SYNTAX »06 .NICK [07ADMIN] 10NEW_NICK"));
                 } else {
                         if ($args[1] == $CONFIG['admin_pass'])
                         cmd_send("NICK ". $args[2]);
@@ -284,43 +284,9 @@ function process_commands()
         if(strtoupper($con['buffer']['text']) == '!RANDOMUS'){
             
             // ENVIA RESPOSTA AO CANAL
-                cmd_send(prep_text("07RANDOM-US"," 05 RANDOM US GENERATOR IS 06[DISABLED]10 BY BOT ADMINISTRATOR"));
+                cmd_send(prep_text("07RANDOM US"," 05 RANDOM US GENERATOR IS 06[DISABLED]10 BY BOT ADMINISTRATOR"));
         }
     
-        /* RANDOM */
-        if(strtoupper($con['buffer']['text']) == '!RANDOM'){
-                // LINK PROXY
-                $linkrandom = 'https://randomuser.me/api/';
-                // CURL
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, "$linkrandom");
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                $resultrandom = curl_exec($ch);
-                curl_close($ch);
- 
-                // DECODIFICANDO RESPOSTA EM JSON
-                $jsonOUTPUT = json_decode($resultrandom, true);
- 
-                // DEFININDO VARIAVEL COM NOME AMIGAVEL
-                $name = $jsonOUTPUT['first'] ['last'];
-                $gender = $jsonOUTPUT['gender'];
-                $roadnumber = $jsonOUTPUT['number'];
-                $roadname = $jsonOUTPUT['name'];
-                $city = $jsonOUTPUT['city'];
-                $state = $jsonOUTPUT['state'];
-                $country = $jsonOUTPUT['country'];
-                $zip = $jsonOUTPUT['postcode'];
-                $age = $jsonOUTPUT['age'];
-                $cell = $jsonOUTPUT['value'];
-                $email = $jsonOUTPUT['email'];
-
-               
-                // ENVIA RESPOSTA AO CANAL
-                cmd_send(prep_text("07RANDOM"," 07RAMDOM"," 07NAME »02 $name 04|07 GENDER » 02$gender 04|07 COUNTRY 02$country  04| 07BIRTH » 02$age 04|07 ZIP » 02$zip 04| 07ADDRESS » 02$roadname - 10$roadnumber 04|07 CITY » 02$city 04| 07STATE » 02$state 04|07 PHONE » 02$cell 04|07 EMAIL » 02$email"));
-        }
 
         /* BIN */
        if(strtoupper(substr($con['buffer']['text'], 0, 6)) == '!BIN'){
@@ -365,6 +331,42 @@ function process_commands()
             }
         }
        
+    
+        /* BIN */
+       if(strtoupper(substr($con['buffer']['text'], 0, 6)) == '!BINLOOKUP'){
+
+           parametro = explode(' ', $con['buffer']['text']);
+           $parametro[0] = !BINLOOKUP;
+           $parametro[1] = $CheckBIN;
+
+
+                // CURL
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://lookup.binlist.net/'.$CheckBIN[0]);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                $output = curl_exec($ch);
+                curl_close($ch);
+
+
+            // DECODIFICANDO RESPOSTA EM JSON
+            $jsonOUTPUT = json_decode($output, true);
+
+            // DEFININDO VARIAVEL COM NOME AMIGAVEL
+            $bandeira = $jsonOUTPUT['scheme'];
+            $tipo = $jsonOUTPUT['type'];
+            $nivel = $jsonOUTPUT['brand'];
+            $pais = $jsonOUTPUT['country']['alpha2'];
+            $moeda = $jsonOUTPUT['country']['currency'];
+            $bancoNOME = $jsonOUTPUT['bank']['name'];
+            $bancoURL = $jsonOUTPUT['bank']['url'];
+            $bancoPHONE = $jsonOUTPUT['bank']['phone'];
+               
+                // ENVIA RESPOSTA AO CANAL
+                cmd_send(prep_text("07BIN", " 07CheckBIN -> 10$CheckBIN[0] 04|07 FLAG » 02$bandeira04 |07 TYPE » 02$tipo 04|07 COUNTRY » 02$pais 04|07 LEVEL » 02$nivel 04| 07CURRENCY » 02$moeda 04|07 BANK INFO » 02$bancoNOME - 10$bancoPHONE 06[$bancoURL]04 |07 #GLOBAL"));
+        }
 
         /* Noob */
         if(strtoupper(substr($con['buffer']['text'], 0, 5)) == '!NOOB') {
