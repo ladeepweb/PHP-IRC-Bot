@@ -349,7 +349,7 @@ function process_commands()
        
     
         /* BIN beta */
-       if(strtoupper(substr($con['buffer']['text'], 0, 6)) == '!BINLOOKUP'){
+       print_r (if(strtoupper(substr($con['buffer']['text'], 0, 6)) == '!BINLOOKUP')){
            
            $gatilho = explode(' ', $con['buffer']['text'], 0, 6);
            $gatilho[0] = '!BINLOOKUP';
