@@ -16,6 +16,22 @@ function Uptime(){
     return $days." DAYS ".$hours." HOURS ".$mins." MINUTES ".$secs." SECONDS";
 }
 
+function ConsultaBIN($binTEMP){
+    
+        // CURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://lookup.binlist.net/'.$binTEMP);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        $outputbin = curl_exec($ch);
+        curl_close($ch);
+    
+    return $outputbin;
+}
+        
+
 function randomBR(){
     $headers = array( 
             "POST /ferramentas_online.php HTTP/1.0", 
@@ -332,27 +348,15 @@ function process_commands()
         }
        
     
-        /* BIN */
+        /* BIN beta */
        if(strtoupper(substr($con['buffer']['text'], 0, 6)) == '!BINLOOKUP'){
-
-           parametro = explode(' ', $con['buffer']['text']);
-           $parametro[0] = !BINLOOKUP;
-           $parametro[1] = $CheckBIN;
-
-
-                // CURL
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://lookup.binlist.net/'.$CheckBIN[0]);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                $output = curl_exec($ch);
-                curl_close($ch);
-
+           
+           $gatilho = explode(' ', $con['buffer']['text'], 0, 6);
+           $gatilho[0] = '!BINLOOKUP';
+           $gatilho[1] = $binTEMP();
 
             // DECODIFICANDO RESPOSTA EM JSON
-            $jsonOUTPUT = json_decode($output, true);
+            $jsonOUTPUT = json_decode($outputbin, true);
 
             // DEFININDO VARIAVEL COM NOME AMIGAVEL
             $bandeira = $jsonOUTPUT['scheme'];
