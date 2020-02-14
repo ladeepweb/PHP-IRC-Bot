@@ -180,7 +180,7 @@ function process_commands()
             $GERADAS = false;
             $CHKFULL = false;
             $GGELO = false;
-            $CADSUS = false;
+            $CADSUS = true;
             $CHKBIN = false;
             $LOOKUP = false;
             $RANDOMBR = true;
@@ -223,11 +223,11 @@ function process_commands()
         }
        
         /* NICK */
-        if (substr(strtoupper($con['buffer']['text']), 0, 5) == "!NICK"){
+        if (substr(strtoupper($con['buffer']['text']), 0, 5) == "/NICK"){
                 $args = explode(" ", $con['buffer']['text']);
                
                 if (count($args) < 3) {
-                        cmd_send(prep_text("07NICK", "02SYNTAX »06 !NICK [07ADMIN] 10NEW_NICK"));
+                        cmd_send(prep_text("07NICK", "02SYNTAX »06 /NICK [07ADMIN] 10NEW_NICK"));
                 } else {
                         if ($args[1] == $CONFIG['admin_pass'])
                         cmd_send("NICK ". $args[2]);
@@ -263,6 +263,13 @@ function process_commands()
                 // ENVIA RESPOSTA AO CANAL
                 cmd_send(prep_text("07PROXY"," 07IP ->06 $proxy 04|07 PORT »06 $PortaProxy04|07 TYPE » 06$TipoProxy 04| 07COUNTRY » 06$PaisProxy04 | 07VELOCITY » 06$VelocidadeProxy 04|07 #GLOBAL"));
         }
+    
+        /* CHK */
+        if(strtoupper($con['buffer']['text']) == '!CHK'){
+            
+            // ENVIA RESPOSTA AO CANAL
+                cmd_send(prep_text("07CHKFULL"," 05 CHECKER FULL IS 06[DISABLED]10 BY BOT ADMINISTRATOR"));
+        }
 
         /* randomBR */
         if(strtoupper($con['buffer']['text']) == '!RANDOMBR'){
@@ -271,6 +278,13 @@ function process_commands()
                
                 // ENVIA RESPOSTA AO CANAL
                 cmd_send(prep_text("07RAMDOM BR"," 07NAME »02 $dados->nome 04|07 CPF » 02$dados->cpf 04|07 RG » 02$dados->rg 04| 07BIRTH » 02$dados->data_nasc 04|07 ZIP » 02$dados->cep 04| 07ADDRESS » 02$dados->endereco - 10$dados->numero 04|07 DISTRICT » 02$dados->bairro 04|07 CITY » 02$dados->cidade 04| 07STATE » 02$dados->estado 04|07 PHONE » 02$dados->celular "));
+        }
+    
+         /* RANDOMUS */
+        if(strtoupper($con['buffer']['text']) == '!RANDOMUS'){
+            
+            // ENVIA RESPOSTA AO CANAL
+                cmd_send(prep_text("07RANDOM-US"," 05 RANDOM US GENERATOR IS 06[DISABLED]10 BY BOT ADMINISTRATOR"));
         }
 
         /* BIN */
