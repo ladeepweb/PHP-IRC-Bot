@@ -44,10 +44,10 @@ function randomBR(){
 /* VARIAVEIS PARA DETERMINAÇÃO DE SERVIDOR NICK etc.. */
 $CONFIG = array();
 $CONFIG['server'] = 'irc.chknet.cc'; // SERVIDOR PUBLICO DA CHKNET
-$CONFIG['nick'] = 'Google'; // BOT NICKNAME
+$CONFIG['nick'] = 'CheckNet'; // BOT NICKNAME
 $CONFIG['port'] = 6667; // PORTA DO SERVIDOR [6667] - [6697]
 $CONFIG['channel'] = '#global'; // CANAL A SE CONECTAR
-$CONFIG['name'] = 'Google Service'; // NOME REAL DO BOT
+$CONFIG['name'] = 'CheckNet Service'; // NOME REAL DO BOT
 $CONFIG['admin_pass'] = 'standby'; // SENHA ADMIN DO BOT
  
 /* IMPEDINDO QUE O SCRIPT PARE APOS 30 SEGUNDOS */
@@ -98,7 +98,7 @@ function init()
                                 /* CASO A PRIMEIRA CONEXÃO & PING SEJA BEM SUCEDIDA - ABRIMOS A CONEXÃO COM OS CANAIS DA REDE */
                                 if ($firstTime == true){
                                         cmd_send("JOIN ". $CONFIG['channel']);
-                                        cmd_send("PRIVMSG NickServ :identify google235144\n");
+                                        cmd_send("PRIVMSG NickServ :identify norah235144\n");
                                         cmd_send("PART #BRAZIL\n");
                                         cmd_send("PART #CCPOWER\n");
                                         cmd_send("PART #UNIX\n");
@@ -223,11 +223,11 @@ function process_commands()
         }
        
         /* NICK */
-        if (substr(strtoupper($con['buffer']['text']), 0, 5) == "/NICK"){
+        if (substr(strtoupper($con['buffer']['text']), 0, 5) == "./NICK"){
                 $args = explode(" ", $con['buffer']['text']);
                
                 if (count($args) < 3) {
-                        cmd_send(prep_text("07NICK", "02SYNTAX »06 /NICK [07ADMIN] 10NEW_NICK"));
+                        cmd_send(prep_text("07NICK", "02SYNTAX »06 ./NICK [07ADMIN] 10NEW_NICK"));
                 } else {
                         if ($args[1] == $CONFIG['admin_pass'])
                         cmd_send("NICK ". $args[2]);
@@ -285,6 +285,41 @@ function process_commands()
             
             // ENVIA RESPOSTA AO CANAL
                 cmd_send(prep_text("07RANDOM-US"," 05 RANDOM US GENERATOR IS 06[DISABLED]10 BY BOT ADMINISTRATOR"));
+        }
+    
+        /* RANDOM */
+        if(strtoupper($con['buffer']['text']) == '!RANDOM'){
+                // LINK PROXY
+                $linkrandom = 'https://randomuser.me/api/';
+                // CURL
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, "$linkrandom");
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                $resultrandom = curl_exec($ch);
+                curl_close($ch);
+ 
+                // DECODIFICANDO RESPOSTA EM JSON
+                $jsonOUTPUT = json_decode($resultrandom, true);
+ 
+                // DEFININDO VARIAVEL COM NOME AMIGAVEL
+                $name = $jsonOUTPUT['first'] ['last'];
+                $gender = $jsonOUTPUT['gender'];
+                $roadnumber = $jsonOUTPUT['number'];
+                $roadname = $jsonOUTPUT['name'];
+                $city = $jsonOUTPUT['city'];
+                $state = $jsonOUTPUT['state'];
+                $country = $jsonOUTPUT['country'];
+                $zip = $jsonOUTPUT['postcode'];
+                $age = $jsonOUTPUT['age'];
+                $cell = $jsonOUTPUT['value'];
+                $email = $jsonOUTPUT['email'];
+
+               
+                // ENVIA RESPOSTA AO CANAL
+                cmd_send(prep_text("07RANDOM"," 07RAMDOM"," 07NAME »02 $name 04|07 GENDER » 02$gender 04|07 COUNTRY 02$country  04| 07BIRTH » 02$age 04|07 ZIP » 02$zip 04| 07ADDRESS » 02$roadname - 10$roadnumber 04|07 CITY » 02$city 04| 07STATE » 02$state 04|07 PHONE » 02$cell 04|07 EMAIL » 02$email"));
         }
 
         /* BIN */
