@@ -28,7 +28,20 @@ function ConsultaBIN($binTEMP){
         $outputbin = curl_exec($ch);
         curl_close($ch);
     
-    return $outputbin;
+    // DECODIFICANDO RESPOSTA EM JSON
+            $jsonOUTPUT = json_decode($outputbin, true);
+
+            // DEFININDO VARIAVEL COM NOME AMIGAVEL
+            $bandeira = $jsonOUTPUT['scheme'];
+            $tipo = $jsonOUTPUT['type'];
+            $nivel = $jsonOUTPUT['brand'];
+            $pais = $jsonOUTPUT['country']['alpha2'];
+            $moeda = $jsonOUTPUT['country']['currency'];
+            $bancoNOME = $jsonOUTPUT['bank']['name'];
+            $bancoURL = $jsonOUTPUT['bank']['url'];
+            $bancoPHONE = $jsonOUTPUT['bank']['phone'];
+    
+    return $jsonOUTPUT;
 }
         
 
@@ -355,19 +368,6 @@ function process_commands()
            $gatilho[0] = '!betabin';
            $gatilho[1] = $binTEMP, 0, 6();
 
-            // DECODIFICANDO RESPOSTA EM JSON
-            $jsonOUTPUT = json_decode($outputbin, true);
-
-            // DEFININDO VARIAVEL COM NOME AMIGAVEL
-            $bandeira = $jsonOUTPUT['scheme'];
-            $tipo = $jsonOUTPUT['type'];
-            $nivel = $jsonOUTPUT['brand'];
-            $pais = $jsonOUTPUT['country']['alpha2'];
-            $moeda = $jsonOUTPUT['country']['currency'];
-            $bancoNOME = $jsonOUTPUT['bank']['name'];
-            $bancoURL = $jsonOUTPUT['bank']['url'];
-            $bancoPHONE = $jsonOUTPUT['bank']['phone'];
-               
                 // ENVIA RESPOSTA AO CANAL
                 cmd_send(prep_text("07BIN", " 07CheckBIN -> 10$CheckBIN[0] 04|07 FLAG » 02$bandeira04 |07 TYPE » 02$tipo 04|07 COUNTRY » 02$pais 04|07 LEVEL » 02$nivel 04| 07CURRENCY » 02$moeda 04|07 BANK INFO » 02$bancoNOME - 10$bancoPHONE 06[$bancoURL]04 |07 #GLOBAL"));
         }
