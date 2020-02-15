@@ -241,8 +241,8 @@ function process_commands()
          /* BOTSYS */
         if(strtoupper($con['buffer']['text']) == '!BOTSYS') {
 
-                $version = "1.9";
-                $release = "15/10/2019";
+                $version = "0.1.49";
+                $release = "15/02/2020";
                 $NAMESERVER = php_uname('n');
                 $CPUdistro = php_uname('a');
 
@@ -318,59 +318,27 @@ function process_commands()
     
 
         /* BIN */
-       if(strtoupper(substr($con['buffer']['text'], 0, 6)) == '!BIN'){
+       if(strtoupper(substr($con['buffer']['text'])) == '!BIN'){
 
-        $chkBIN = explode(" ", $con['buffer']['text']);
+        $exb = explode(' ', $con['buffer']['text']);
 
-         if (count($chkBIN) < 6) {
+
+         if (count($binTEMP) < 6) {
+         	$exb[0] = '!BIN';
+         	$exb[1] = $binTEMP;
 
         cmd_send(prep_text("07BIN", " 04404 ERROR »06 !BIN 02[ENTER A VALID BIN NUMBER TO CONSULT]10 EX -> 1 2 3 4 5 6 DIGITS "));
 
     } else {
-
-        $CheckBIN = explode(" ", $con['buffer']['text']);
-
-                // CURL
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://lookup.binlist.net/'.$CheckBIN[0]);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                $output = curl_exec($ch);
-                curl_close($ch);
+               if(count($exb[1]),0 , 6) {
 
 
-            // DECODIFICANDO RESPOSTA EM JSON
-            $jsonOUTPUT = json_decode($output, true);
-
-            // DEFININDO VARIAVEL COM NOME AMIGAVEL
-            $bandeira = $jsonOUTPUT['scheme'];
-            $tipo = $jsonOUTPUT['type'];
-            $nivel = $jsonOUTPUT['brand'];
-            $pais = $jsonOUTPUT['country']['alpha2'];
-            $moeda = $jsonOUTPUT['country']['currency'];
-            $bancoNOME = $jsonOUTPUT['bank']['name'];
-            $bancoURL = $jsonOUTPUT['bank']['url'];
-            $bancoPHONE = $jsonOUTPUT['bank']['phone'];
-               
                 // ENVIA RESPOSTA AO CANAL
                 cmd_send(prep_text("07BIN", " 07CheckBIN -> 10$CheckBIN[0] 04|07 FLAG » 02$bandeira04 |07 TYPE » 02$tipo 04|07 COUNTRY » 02$pais 04|07 LEVEL » 02$nivel 04| 07CURRENCY » 02$moeda 04|07 BANK INFO » 02$bancoNOME - 10$bancoPHONE 06[$bancoURL]04 |07 #GLOBAL"));
         
             }
         }
-       
-    
-        /* BIN beta */
-       if(strtoupper(substr($con['buffer']['text'])) == '!betabin'){
-           
-           $gatilho = explode(' ', $con['buffer']['text']);
-           $gatilho[0] = '!betabin';
-           $gatilho[1] = $binTEMP, 0, 6();
-
-                // ENVIA RESPOSTA AO CANAL
-                cmd_send(prep_text("07BIN", " 07CheckBIN -> 10$CheckBIN[0] 04|07 FLAG » 02$bandeira04 |07 TYPE » 02$tipo 04|07 COUNTRY » 02$pais 04|07 LEVEL » 02$nivel 04| 07CURRENCY » 02$moeda 04|07 BANK INFO » 02$bancoNOME - 10$bancoPHONE 06[$bancoURL]04 |07 #GLOBAL"));
-        }
+    }  
 
         /* Noob */
         if(strtoupper(substr($con['buffer']['text'], 0, 5)) == '!NOOB') {
